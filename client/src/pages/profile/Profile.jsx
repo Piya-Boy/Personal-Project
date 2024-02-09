@@ -1,6 +1,7 @@
 import './profile.scss'
 
-export const Profile = () => {
+export default function Profile() {
+  
   return (
     <div>Profile</div>
   )

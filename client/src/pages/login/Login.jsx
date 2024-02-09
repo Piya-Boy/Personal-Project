@@ -5,7 +5,7 @@ export default function Login() {
   const handleLogin = () => {
     console.log("login");
   };
-  
+
   return (
     <div className="login">
       <div className="card">
@@ -17,9 +17,9 @@ export default function Login() {
             consequatur.
           </p>
           <span>Don't you have an account?</span>
-          {/* <Link to="/register"> */}
+          <Link to="/register">
           <button>Register</button>
-          {/* </Link> */}
+          </Link>
         </div>
         <div className="right">
           <h1>Login</h1>

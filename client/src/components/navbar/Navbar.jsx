@@ -1,6 +1,6 @@
 import './navbar.scss'
 
-export const Navbar = () => {
+export default function Navbar() {
   return (
     <div>Navbar</div>
   )

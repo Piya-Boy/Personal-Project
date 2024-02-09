@@ -1,7 +1,7 @@
 import './rightBar.scss'
 
-export const RightBar = () => {
-  return (
+export default function RightBar() {
+    return (
     <div>RightBar</div>
   )
 }

@@ -1,6 +1,7 @@
 import './leftBar.scss'
 
-export const LeftBar = () => {
+export default function LeftBar() {
+  
   return (
     <div>LeftBar</div>
   )
