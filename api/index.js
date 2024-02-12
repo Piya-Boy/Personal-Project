@@ -14,14 +14,21 @@ const ralationshipRoute = require('./routes/relationships.js')
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", true);
+    next();
+});
+
 app.use(express.json());
 
 app.use(cors(
     {
-        origin: "http://localhost:8888",
+        origin: "http://localhost:3000",
         credentials: true
     }
 ));
+
+app.options("*", cors());
 
 app.use(cookieParser());
 

@@ -5,8 +5,13 @@ const createError = require("../utils/createError");
 
 const register = async (req, res, next) => {
     const { username, password, email, name } = req.body;
+    console.log(req.body);
+    if (!username || !password || !email || !name) {
+        return next(createError(400, "Please provide all fields"));
+    }
 
     try {
+        // Check if the user already exists
         const existingUser = await db.users.findUnique({
             where: { username: username }
         });
@@ -15,6 +20,7 @@ const register = async (req, res, next) => {
             return next(createError(409, "User already exists"));
         }
 
+        // If the user does not exist, proceed with user creation
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(password, salt);
 
@@ -27,11 +33,17 @@ const register = async (req, res, next) => {
             }
         });
 
+        if (!newUser) {
+            return next(createError(500, "Failed to create user"));
+        }
+
+
         return res.status(200).json("User has been created.");
     } catch (error) {
         return next(createError(500, error.message));
     }
 };
+
 
 const login = async (req, res, next) => {
     const { username, password: userPassword } = req.body; // Renamed password to userPassword

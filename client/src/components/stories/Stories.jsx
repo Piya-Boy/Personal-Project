@@ -1,6 +1,6 @@
 import './stories.scss'
 
-export const Stories = () => {
+export default function Stories() {
   return (
     <div>Stories</div>
   )

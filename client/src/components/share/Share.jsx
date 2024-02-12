@@ -1,6 +1,6 @@
 import './share.scss'
 
-export const Share = () => {
+export default function Share() {
   return (
     <div>Share</div>
   )
