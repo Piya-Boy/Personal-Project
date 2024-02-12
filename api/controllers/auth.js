@@ -1,13 +1,27 @@
 const db = require("../config/connect.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const joi = require("joi");
 const createError = require("../utils/createError");
 
 const register = async (req, res, next) => {
     const { username, password, email, name } = req.body;
-    console.log(req.body);
-    if (!username || !password || !email || !name) {
-        return next(createError(400, "Please provide all fields"));
+
+    if (!(username.trim() && password.trim() && email.trim() && name.trim())) {
+        return next(createError(400, "Please fill in all fields"));
+    }
+    // Validate the user input
+    const schema = joi.object({
+        username: joi.string().required(),
+        password: joi.string().required(),
+        email: joi.string().email().required(),
+        name: joi.string().required()
+    });
+
+    const { error } = schema.validate({ username, password, email, name });
+
+    if (error) {
+        return next(createError(400, error.details[0].message));
     }
 
     try {
@@ -37,7 +51,6 @@ const register = async (req, res, next) => {
             return next(createError(500, "Failed to create user"));
         }
 
-
         return res.status(200).json("User has been created.");
     } catch (error) {
         return next(createError(500, error.message));
@@ -47,6 +60,19 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     const { username, password: userPassword } = req.body; // Renamed password to userPassword
+
+    // Validate the user input
+    const schema = joi.object({
+        username: joi.string().required(),
+        userPassword: joi.string().required()
+    });
+
+    const { error } = schema.validate({ username, userPassword });
+
+    if (error) {
+        return next(createError(400, error.details[0].message));
+    }
+
 
     try {
         const user = await db.users.findUnique({
@@ -58,14 +84,14 @@ const login = async (req, res, next) => {
         }
 
         const checkPassword = bcrypt.compareSync(userPassword, user.password); // Used userPassword instead of password
-
         if (!checkPassword) {
             return next(createError(400, "Wrong password or username!"));
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
 
-        const { password, ...others } = user;
+        // Check if 'user' has 'password' property before destructuring
+        const { password, ...others } = user || {};
 
         res.cookie("accessToken", token, {
             httpOnly: true
@@ -77,6 +103,7 @@ const login = async (req, res, next) => {
         return next(createError(500, error.message));
     }
 };
+
 
 const logout = (req, res, next) => {
     res.clearCookie("accessToken", {

@@ -1,9 +1,9 @@
-import './register.scss'
-import { Link, useNavigate } from 'react-router-dom';
-import axios from '../../config/axios';
-import { useState } from 'react';
-export default function Register() {
+import "./register.scss";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../../config/axios";
+import { useState } from "react";
 
+export default function Register() {
   const [input, setInput] = useState({
     username: "",
     email: "",
@@ -11,25 +11,45 @@ export default function Register() {
     name: "",
   });
 
- const [err, setErr] = useState(null);
-
-  const handleChange = (e) => {
-    setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    try {
-     await axios.post("/auth/register", input);
-      navigate("/login");
-    } catch (err) {
-      setErr(err.response.data);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({ ...prev, [name]: value }));
+    
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-    console.log(err);
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+    if (!input.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+    if (!input.email.trim()) {
+      newErrors.email = "Email is required";
+    }
+    if (!input.password.trim()) {
+      newErrors.password = "Password is required";
+    }
+    if (!input.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      await axios.post("/auth/register", input);
+      navigate("/login");
+    } catch (err) {
+      setErrors({ general: err.response.data });
+    }
+  };
 
   return (
     <div className="register">
@@ -53,28 +73,36 @@ export default function Register() {
               type="text"
               placeholder="Username"
               name="username"
+              value={input.username}
               onChange={handleChange}
             />
+            {errors.username && <p className="error">{errors.username}</p>}
             <input
               type="email"
               placeholder="Email"
               name="email"
+              value={input.email}
               onChange={handleChange}
             />
+            {errors.email && <p className="error">{errors.email}</p>}
             <input
               type="password"
               placeholder="Password"
               name="password"
+              value={input.password}
               onChange={handleChange}
             />
+            {errors.password && <p className="error">{errors.password}</p>}
             <input
               type="text"
               placeholder="Name"
               name="name"
+              value={input.name}
               onChange={handleChange}
               autoComplete="off"
             />
-            {err && err}
+            {errors.name && <p className="error">{errors.name}</p>}
+            {errors.general && <p className="error">{errors.general}</p>}
             <button onClick={handleClick}>Register</button>
           </form>
         </div>
