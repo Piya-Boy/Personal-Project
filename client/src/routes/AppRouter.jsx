@@ -8,23 +8,24 @@ import RightBar from "../components/rightBar/RightBar";
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-
+import { DarkModeContext } from "../context/darkModeContext";
 export default function AppRouter() {
   const { currentUser } = useContext(AuthContext);
 
+  const { darkMode } = useContext(DarkModeContext);
 
     const Layout = () => {
         return (
-            <div >
-                <Navbar />
-                <div style={{ display: "flex" }}>
-                    <LeftBar />
-                    <div style={{ flex: 6 }}>
-                        <Outlet />
-                    </div>
-                    <RightBar />
-                </div>
+          <div className={`theme-${darkMode ? "dark" : "light"}`}>
+            <Navbar />
+            <div style={{ display: "flex" }}>
+              <LeftBar />
+              <div style={{ flex: 6 }}>
+                <Outlet />
+              </div>
+              <RightBar />
             </div>
+          </div>
         );
     };
     const ProtectedRoute = ({ children }) => {

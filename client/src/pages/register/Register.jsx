@@ -14,34 +14,32 @@ export default function Register() {
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInput((prev) => ({ ...prev, [name]: value }));
-    
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
+ const handleChange = (e) => {
+   const { name, value } = e.target;
+   setInput((prev) => ({ ...prev, [name]: value }));
+   setErrors((prev) => ({ ...prev, [name]: "" }));
+ };
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    const newErrors = {};
     if (!input.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-    if (!input.email.trim()) {
-      newErrors.email = "Email is required";
-    }
-    if (!input.password.trim()) {
-      newErrors.password = "Password is required";
-    }
-    if (!input.name.trim()) {
-      newErrors.name = "Name is required";
-    }
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      setErrors((prev) => ({ ...prev, username: "Username is required" }));
       return;
     }
+    if (!input.email.trim()) {
+      setErrors((prev) => ({ ...prev, email: "Email is required" }));
+      return;
+    }
+    if (!input.password.trim()) {
+      setErrors((prev) => ({ ...prev, password: "Password is required" }));
+      return;
+    }
+    if (!input.name.trim()) {
+      setErrors((prev) => ({ ...prev, name: "Name is required" }));
+      return;
+    }
+    
 
     try {
       await axios.post("/auth/register", input);
