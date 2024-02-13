@@ -12,15 +12,27 @@ import Messages from "../../assets/10.png";
 import Tutorials from "../../assets/11.png";
 import Courses from "../../assets/12.png";
 import Fund from "../../assets/13.png";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import userProfile from "../../assets/user.png";
 import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
+import axios from '../../config/axios';
 export default function LeftBar() {
   
   
   const { currentUser } = useContext(AuthContext);
 
   const profilePic = currentUser.profilePic || userProfile;
+  const logout = async () => {
+    console.log("Logging out...");
+    try {
+      localStorage.clear();
+       await axios.post("/auth/logout");
+       window.location.reload();
+     } catch (err) {
+       console.log(err);
+     }
+   };
 
   return (
     <div className="leftBar">
@@ -90,6 +102,13 @@ export default function LeftBar() {
             <img src={Courses} alt="" />
             <span>Courses</span>
           </div>
+        </div>
+        <hr />
+        <div className="menu">
+            <button onClick={logout} className="logout item" style={{ cursor: "pointer" }} >
+              <ExitToAppIcon />
+              <span>Logout</span>
+            </button>
         </div>
       </div>
     </div>

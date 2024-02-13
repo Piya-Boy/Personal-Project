@@ -21,17 +21,22 @@ const register = async (req, res, next) => {
     const { error } = schema.validate({ username, password, email, name });
 
     if (error) {
-        return next(createError(400, error.details[0].message));
+      return res.status(400).json(error.details[0].message);
     }
 
     try {
-        // Check if the user already exists
-        const existingUser = await db.users.findUnique({
-            where: { username: username }
+        // Check username and email if the user already exists
+        const existingUser = await db.users.findFirst({
+            where: {
+                OR: [
+                    { username: username },
+                    { email: email }
+                ]
+            }
         });
-
+        
         if (existingUser) {
-            return next(createError(409, "User already exists"));
+            return res.status(409).json("User already exists");
         }
 
         // If the user does not exist, proceed with user creation
@@ -48,7 +53,7 @@ const register = async (req, res, next) => {
         });
 
         if (!newUser) {
-            return next(createError(500, "Failed to create user"));
+            return res.status(500).json("Something went wrong");
         }
 
         return res.status(200).json("User has been created.");
@@ -70,7 +75,7 @@ const login = async (req, res, next) => {
     const { error } = schema.validate({ username, userPassword });
 
     if (error) {
-        return next(createError(400, error.details[0].message));
+        return res.status(400).json(error.details[0].message);
     }
 
 
@@ -80,12 +85,14 @@ const login = async (req, res, next) => {
         });
 
         if (!user) {
-            return next(createError(404, "User not found"));
+            return res.status(404).json("User not found!");
         }
 
         const checkPassword = bcrypt.compareSync(userPassword, user.password); // Used userPassword instead of password
         if (!checkPassword) {
-            return next(createError(400, "Wrong password or username!"));
+            return res.status(400).json("Wrong password or username!");
+
+
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);

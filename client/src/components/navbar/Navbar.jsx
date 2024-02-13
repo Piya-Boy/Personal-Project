@@ -1,4 +1,4 @@
-import './navbar.scss'
+import "./navbar.scss";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
@@ -26,11 +26,15 @@ export default function Navbar() {
           <span>{"<DEVBOOK/>"}</span>
         </Link>
         <HomeOutlinedIcon />
-        {darkMode ? (
-          <WbSunnyOutlinedIcon onClick={toggle} />
-        ) : (
-          <DarkModeOutlinedIcon onClick={toggle} />
-        )}
+
+        <div style={{ cursor: "pointer" }}>
+          {darkMode ? (
+            <WbSunnyOutlinedIcon onClick={toggle} />
+          ) : (
+            <DarkModeOutlinedIcon onClick={toggle} />
+          )}
+        </div>
+
         <GridViewOutlinedIcon />
         <div className="search">
           <SearchOutlinedIcon />
@@ -48,5 +52,4 @@ export default function Navbar() {
       </div>
     </div>
   );
-};
-
+}
