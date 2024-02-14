@@ -18,7 +18,7 @@ export default function Suggestions() {
     <div className="item">
       <span>Suggestions For You</span>
       {suggestions.map((suggestion) => (
-        <div className="user">
+        <div className="user" key={suggestion.id}>
           <div className="userInfo">
             <img
               src={suggestion.img}

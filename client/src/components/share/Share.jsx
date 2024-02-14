@@ -1,4 +1,4 @@
-import './share.scss'
+import "./share.scss";
 import Image from "../../assets/img.png";
 import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
@@ -6,37 +6,95 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import userProfile from "../../assets/user.png";
 import NearMeIcon from "@mui/icons-material/NearMe";
-
+import { useMutation, useQueryClient } from "react-query";
+import axios from "../../config/axios";
 export default function Share() {
-  
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({ desc: "" }); // Assuming you have a "desc" field
+  const [file, setFile] = useState(null);
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  }
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
 
+  const upload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/upload", formData);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const { currentUser } = useContext(AuthContext);
-  const profilePic = currentUser.profilePic ?? userProfile;
-  
+  const profilePic = "/upload/" + currentUser.profilePic ?? userProfile;
+
   const isInputEmpty = Object.values(inputs).every((value) => value === "");
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    async (newPost) => {
+      try {
+        const res = await axios.post("/posts", newPost);
+        return res.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("posts");
+      },
+    }
+  );
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    let imgUrl = "";
+    if (file) imgUrl = await upload();
+    mutation.mutate({ desc: inputs.desc, userId: currentUser.id, img: imgUrl });
+    setInputs({ desc: "" });
+    setFile(null);
+  };
   return (
     <div className="share">
       <div className="container">
         <div className="top">
-          <img src={profilePic} alt="" />
-          <input
-            type="text"
-            name="desc"
-            onChange={handleChange}
-            placeholder={`What's on your mind ${currentUser.name}?`}
-          />
+          <div className="left">
+            <img src={profilePic} alt="" />
+            <input
+              type="text"
+              name="desc"
+              placeholder={`What's on your mind ${currentUser.name}?`}
+              onChange={handleChange}
+              value={inputs.desc}
+              autoComplete="off"
+            />
+          </div>
+        </div>
+        <div className="preview">
+          {file && (
+            <div className="image">
+              <img src={URL.createObjectURL(file)} alt="" />
+            </div>
+          )}
         </div>
         <hr />
         <div className="bottom">
           <div className="left">
-            <input type="file" id="file" style={{ display: "none" }} />
+            <input
+              type="file"
+              id="file"
+              accept=".png,.jpeg,.jpg"
+              name="file"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
             <label htmlFor="file">
               <div className="item">
                 <img src={Image} alt="" />
@@ -53,11 +111,16 @@ export default function Share() {
             </div>
           </div>
           <div className="right">
-            <button disabled={isInputEmpty}><NearMeIcon/></button>
+            {mutation.isLoading ? (
+              "Posting..."
+            ) : (
+              <button disabled={isInputEmpty} onClick={handleClick}>
+                <NearMeIcon />{" "}
+              </button>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
-};
-
+}

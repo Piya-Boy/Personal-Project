@@ -45,13 +45,18 @@
 
       .content {
         margin: 20px 0px;
+        overflow-wrap: break-word;
+
+        p {
+        overflow-wrap: break-word;
+        }
 
         img {
           width: 100%;
-          max-height: 500px;
+          max-height: auto;
           object-fit: cover;
           margin-top: 20px;
-          border-radius: 4px;
+          border-radius: 10px;
         }
       }
 

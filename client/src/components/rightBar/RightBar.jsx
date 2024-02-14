@@ -1,6 +1,6 @@
 import LatestActivities from '../latestactivities/LatestActivities';
-import OnlineFriends from '../onlinefriends/OnlineFriends';
 import Suggestions from '../suggestions/Suggestions';
+import OnlineFriends from '../onlinefriends/OnlineFriends';
 import './rightBar.scss'
 
 export default function RightBar() {
@@ -8,8 +8,8 @@ export default function RightBar() {
       <div className="rightBar">
         <div className="container">
           <Suggestions />
-          <LatestActivities />
-          <OnlineFriends/>
+          <LatestActivities/>
+          <OnlineFriends />
         </div>
       </div>
     );

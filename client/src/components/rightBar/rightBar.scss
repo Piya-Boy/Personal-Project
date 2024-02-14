@@ -5,7 +5,7 @@
     flex: 3;
     position: sticky;
     top: 50px;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 50px);
     overflow: scroll;
     background-color: themed("bgSoft");
 
@@ -29,8 +29,8 @@
         box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
         padding: 20px;
         margin-bottom: 20px;
-        border-radius: 5px;
         background-color: themed("bg");
+        border-radius: 5px;
 
         span {
           color: gray;
@@ -86,7 +86,6 @@
               color: white;
               cursor: pointer;
               border-radius: 5px;
-
               &:first-child {
                 background-color: #5271ff;
               }

@@ -1,31 +1,30 @@
-import './posts.scss'
+import "./posts.scss";
 import Post from "../post/Post";
+import { useQuery } from "react-query";
+import axios from "../../config/axios";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
+import PostSkeleton from "../Skeleton/PostSkeleton";
+
 export default function Posts() {
-   const posts = [
-    {
-      id: 1,
-      name: "John Doe",
-      userId: 1,
-      profilePic:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-      img: "https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      userId: 2,
-      profilePic:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      desc: "Tenetur iste voluptates dolorem rem commodi voluptate pariatur, voluptatum, laboriosam consequatur enim nostrum cumque! Maiores a nam non adipisci minima modi tempore.",
-    },
-  ];
+  const { currentUser } = useContext(AuthContext);
+  const userId = currentUser.id
+
+  const { isLoading, error, data } = useQuery(["posts", userId], async () => {
+    const res = await axios.get(`/posts?userId=${userId}`);
+    return res.data;
+  });
+
+  // console.log(data);
 
   return (
     <div className="posts">
-    {posts.map(post=>(
-      <Post post={post} key={post.id}/>
-    ))}
+      {error
+        ? "Something went wrong!"
+        : isLoading
+        ? [...Array(5)].map((_, i) => <PostSkeleton key={i} />)
+        : data.map((post) => <Post key={post.id} post={post} />)}
+          
     </div>
   );
-};
+}

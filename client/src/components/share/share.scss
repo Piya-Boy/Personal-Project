@@ -28,8 +28,18 @@
           outline: none;
           padding: 20px 10px;
           background-color: transparent;
-          width: 60%;
+          width: 200%;
           color: themed("textColor");
+        }
+      }
+      
+      .preview {
+        img {
+          width: 100%;
+          max-height: auto;
+          object-fit: cover;
+          margin-top: 20px;
+          border-radius: 10px;
         }
       }
 
