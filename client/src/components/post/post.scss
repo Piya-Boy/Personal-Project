@@ -1,3 +1,4 @@
+
 @import "../../style.scss";
 
 .post {
@@ -75,4 +76,14 @@
       }
     }
   }
+}
+
+.postMenu{
+ @include themify($themes) {
+     .MoreVert{
+         background-color: themed("bg");
+    color: themed("textColor");
+     }
+
+ } 
 }

@@ -17,7 +17,7 @@ const getLikes = async (req, res, next) => {
             }
         });
 
-        const userIds = likes.map(like => like.userId);
+        const userIds = likes.map(like => like.userid);
         return res.status(200).json(userIds);
     } catch (error) {
         console.error(error);
@@ -66,7 +66,10 @@ const deleteLike = async (req, res, next) => {
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
         // Extract post ID from request query parameters
-        const postId = req.body.postId || req.query.postId;
+        const postId = req.params.id || req.query.id;
+
+        // console.log(postId );
+
         if (!postId) {
             return res.status(400).json({ error: "Post ID is required!" });
         }
@@ -77,7 +80,6 @@ const deleteLike = async (req, res, next) => {
                 userid: userInfo.id,
                 postid: parseInt(postId)
             }
-
         });
 
         if (deletedLike.count === 0) {

@@ -1,7 +1,8 @@
 const createError = require("../utils/createError");
 const db = require("../config/connect.js");
 const jwt = require("jsonwebtoken");
-
+const fs = require("fs");
+const path = require("path");
 const getPosts = async (req, res, next) => {
     const userId = req.query.userId;
     const token = req.cookies.accessToken;
@@ -14,7 +15,7 @@ const getPosts = async (req, res, next) => {
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
 
-        console.log(userId);
+        // console.log(userId);
 
         const posts = await db.posts.findMany({
             select: {
@@ -95,7 +96,6 @@ const deletePost = async (req, res, next) => {
 
         // Extract post ID from the request parameters
         const postId = req.params.id || req.query.id;
-console.log(postId);
 
         if (!postId) return res.status(400).json({ error: "Invalid post ID!" });
 
@@ -109,6 +109,14 @@ console.log(postId);
 
         if (deletedPost.count === 0) {
             return res.status(403).json({ error: "You can delete only your post" });
+        }
+
+        // Delete associated files in the upload folder
+        const post = await db.posts.findUnique({ where: { id: parseInt(postId) } });
+        if (post && post.img) {
+            const filePath = path.join(__dirname, '../../client/public', 'upload', post.img);
+            console.log(filePath);
+            fs.unlinkSync(filePath); // Delete the file
         }
 
         return res.status(200).json({ message: "Post has been deleted." });

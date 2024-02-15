@@ -1,60 +1,83 @@
-import './post.scss'
+// Post.js
+
+import "./post.scss";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState, useContext } from "react";
 import moment from "moment";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import axios from "../../config/axios";
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from "../../context/authContext";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 export default function Post({ post }) {
   const [commentOpen, setCommentOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const { currentUser } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
-  const { isLoading, error, data } = useQuery(["likes", post.id], async () => {
-    const res = await axios.get(`/likes?postId=${post.id}`);  
+  const { isLoading: likesLoading, data: likesData } = useQuery(
+    ["likes", post.id],
+    async () => {
+      const res = await axios.get(`/likes?postId=${post.id}`);
+      return res.data;
+    }
+  );
+
+  const { data: commentData } = useQuery(["comments", post.id], async () => {
+    const res = await axios.get(`/comments?postId=${post.id}`);
     return res.data;
   });
 
-
-  const queryClient = useQueryClient();
-
   const mutation = useMutation(
     (liked) => {
-      if (liked) return axios.delete("/likes?postId=" + post.id);
+      if (liked) return axios.delete(`/likes/${post.id}`);
       return axios.post("/likes", { postId: post.id });
     },
     {
       onSuccess: () => {
-        // Invalidate and refetch
         queryClient.invalidateQueries(["likes"]);
       },
     }
   );
+
   const deleteMutation = useMutation(
     (postId) => {
       return axios.delete("/posts/" + post.id);
     },
     {
       onSuccess: () => {
-        // Invalidate and refetch
         queryClient.invalidateQueries(["posts"]);
       },
     }
   );
 
   const handleLike = () => {
-    mutation.mutate(data.includes(currentUser.id));
+    mutation.mutate(likesData.includes(currentUser.id));
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(post.id);
+    confirmAlert({
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete this post?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => deleteMutation.mutate(post.id),
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+    });
   };
 
   return (
@@ -73,10 +96,7 @@ export default function Post({ post }) {
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
-          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.user.id === currentUser.id && (
-            <button onClick={handleDelete}>delete</button>
-          )}
+          <LongMenu handleDelete={handleDelete} />
         </div>
         <div className="content">
           <p>{post.desc}</p>
@@ -84,20 +104,18 @@ export default function Post({ post }) {
         </div>
         <div className="info">
           <div className="item">
-            {isLoading ? (
-              "loading"
-            ) : data.includes(currentUser.id) ? (
-              <ThumbUpRoundedIcon
-                onClick={handleLike}
-              />
+            {likesLoading ? (
+              "Loading..."
+            ) : likesData.includes(currentUser.id) ? (
+              <ThumbUpRoundedIcon onClick={handleLike} />
             ) : (
               <ThumbUpOffAltIcon onClick={handleLike} />
             )}
-            {data?.length} Likes
+            {likesData?.length} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            See Comments
+            {commentData?.length} Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />
@@ -108,4 +126,45 @@ export default function Post({ post }) {
       </div>
     </div>
   );
-};
+}
+
+function LongMenu({ handleDelete }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div className="postMenu">
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        
+        <MoreVertIcon className="MoreVert" />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem
+          onClick={() => {
+            handleDelete();
+            handleClose();
+          }}
+        >
+          <DeleteIcon /> Delete
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
