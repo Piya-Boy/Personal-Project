@@ -10,6 +10,7 @@ const usersRoute = require('./routes/users.js')
 const postRoute = require('./routes/posts.js')
 const commentRoute = require('./routes/comments.js')
 const likeRoute = require('./routes/likes.js')
+const storyRoute = require('./routes/stories.js')
 const ralationshipRoute = require('./routes/relationships.js')
 const multer = require('multer');
 const app = express();
@@ -54,6 +55,7 @@ app.use("/api/users", usersRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/comments", commentRoute);
 app.use("/api/likes", likeRoute);
+app.use("/api/stories", storyRoute);
 app.use("/api/relationships", ralationshipRoute);
 // not found
 app.use(notFound)

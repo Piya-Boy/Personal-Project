@@ -59,8 +59,9 @@
         button {
           color: red;
           font-size: 12px;
-          cursor: pointer;
-        }
+          background-color: themed("bg");
+          border: none;
+                 }
 
         .item {
           display: flex;

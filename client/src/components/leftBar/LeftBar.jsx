@@ -22,7 +22,8 @@ export default function LeftBar() {
   
   const { currentUser } = useContext(AuthContext);
 
-  const profilePic = currentUser.profilePic || userProfile;
+  // const profilePic = "/upload/" + currentUser.profilePic || userProfile;
+  
   const logout = async () => {
     console.log("Logging out...");
     try {
@@ -39,7 +40,7 @@ export default function LeftBar() {
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img src={profilePic} alt="" />
+            <img src={"/upload/" + currentUser.profilePic || userProfile} alt="" />
             <span>{currentUser.name}</span>
           </div>
           <div className="item">

@@ -17,7 +17,7 @@ export default function Navbar() {
   const { currentUser } = useContext(AuthContext);
 
   // check profilePic
-  const profilePic = currentUser.profilePic || userProfile;
+  const profilePic ="/upload/"+ currentUser.profilePic || userProfile;
 
   return (
     <div className="navbar">
@@ -25,7 +25,8 @@ export default function Navbar() {
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>{"<DEVBOOK/>"}</span>
         </Link>
-        <HomeOutlinedIcon />
+        
+        <Link to="/" style={{ textDecoration: "none" }}><HomeOutlinedIcon /></Link>
 
         <div style={{ cursor: "pointer" }}>
           {darkMode ? (
@@ -45,10 +46,12 @@ export default function Navbar() {
         <PersonOutlinedIcon />
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
+        <Link to={`/profile/${currentUser.id}`} >
         <div className="user">
           <img src={profilePic} alt="Profile" />
           <span>{currentUser.name}</span>
-        </div>
+          </div>
+        </Link>
       </div>
     </div>
   );

@@ -85,7 +85,9 @@ export default function Post({ post }) {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={"/upload/" + post.user.profilePic} alt="" />
+            <Link to={`/profile/${post.user.id}`} style={{ textDecoration: "none" }}>
+              <img src={"/upload/" + post.user.profilePic} alt="" />
+            </Link>
             <div className="details">
               <Link
                 to={`/profile/${post.user.id}`}
@@ -147,24 +149,30 @@ function LongMenu({ handleDelete }) {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        
         <MoreVertIcon className="MoreVert" />
       </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem
-          onClick={() => {
-            handleDelete();
-            handleClose();
+      <div className="itemMenu">
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+             left: 40 + "px",
+            },
           }}
         >
-          <DeleteIcon /> Delete
-        </MenuItem>
-      </Menu>
+          <MenuItem
+            onClick={() => {
+              handleDelete();
+              handleClose();
+            }}
+          >
+            <DeleteIcon /> Delete
+          </MenuItem>
+        </Menu>
+      </div>
     </div>
   );
 }

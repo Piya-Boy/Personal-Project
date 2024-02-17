@@ -33,7 +33,11 @@ export default function Share() {
   const { currentUser } = useContext(AuthContext);
   const profilePic = "/upload/" + currentUser.profilePic ?? userProfile;
 
-  const isInputEmpty = Object.values(inputs).every((value) => value === "");
+
+const isInputEmpty = Object.values(inputs).every((value) => value === "");
+const isFileSelected = file !== null;
+
+const isPostButtonDisabled = isInputEmpty && !isFileSelected;
 
   const queryClient = useQueryClient();
 
@@ -114,7 +118,7 @@ export default function Share() {
             {mutation.isLoading ? (
               "Posting..."
             ) : (
-              <button disabled={isInputEmpty} onClick={handleClick}>
+              <button disabled={isPostButtonDisabled} onClick={handleClick}>
                 <NearMeIcon />{" "}
               </button>
             )}
