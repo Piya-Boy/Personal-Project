@@ -17,18 +17,19 @@ export default function Update({ setOpenUpdate, user }) {
     website: user.website,
   });
 
-  const upload = async (file) => {
-    console.log(file);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await axios.post("/upload", formData);
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
+const upload = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await axios.post("/upload", formData);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+  // console.log(data);
+  
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -77,7 +78,7 @@ export default function Update({ setOpenUpdate, user }) {
                   src={
                     cover
                       ? URL.createObjectURL(cover)
-                      : "/upload/" + user.coverPic
+                      :"/upload/" + user.coverPic
                   }
                   alt=""
                 />
@@ -97,7 +98,7 @@ export default function Update({ setOpenUpdate, user }) {
                   src={
                     profile
                       ? URL.createObjectURL(profile)
-                      : "/upload/" + user.profilePic
+                      :"/upload/" + user.profilePic
                   }
                   alt=""
                 />
@@ -155,9 +156,11 @@ export default function Update({ setOpenUpdate, user }) {
             onChange={handleChange}
           />
           <button onClick={handleClick}>Update</button>
+          closeOnClickOutside: false
         </form>
       <CloseIcon className="close" onClick={() => setOpenUpdate(false)}  />
       </div>
+      
     </div>
   );
 }

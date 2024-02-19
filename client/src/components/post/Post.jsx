@@ -86,7 +86,7 @@ export default function Post({ post }) {
         <div className="user">
           <div className="userInfo">
             <Link to={`/profile/${post.user.id}`} style={{ textDecoration: "none" }}>
-              <img src={"/upload/" + post.user.profilePic} alt="" />
+              <img src={"/upload/"+ post.user.profilePic } alt="" />
             </Link>
             <div className="details">
               <Link
@@ -95,14 +95,14 @@ export default function Post({ post }) {
               >
                 <span className="name">{post.user.name}</span>
               </Link>
-              <span className="date">{moment(post.createdAt).fromNow()}</span>
+             <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
           <LongMenu handleDelete={handleDelete} />
         </div>
         <div className="content">
           <p>{post.desc}</p>
-          <img src={"/upload/" + post.img} alt="" />
+          <img src={post.img} alt="" />
         </div>
         <div className="info">
           <div className="item">

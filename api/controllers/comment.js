@@ -66,13 +66,65 @@ const addComment = async (req, res, next) => {
     }
 };
 
+const deleteComment = async (req, res, next) => {
+    console.log(req.params.id);
+    try {
+        const token = req.cookies.accessToken;
+        if (!token) return res.status(401).json("Not authenticated!");
 
-const deleteComment = (req, res, next) => {
-    res.send("delete comment");
+        const userInfo = jwt.verify(token, process.env.SECRET_KEY);
+        if (!userInfo) return res.status(403).json("Token is not valid!");
+
+        const commentId = req.params.id || req.query.id;
+
+        const deletedComment = await db.comments.delete({
+            where: {
+                id: parseInt(commentId),
+                usersid: userInfo.id, // Ensure the user owns the comment
+            },
+        });
+
+        if (deletedComment) {
+            return res.json("Comment has been deleted!");
+        } else {
+            return res.status(403).json("You can delete only your comment!");
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+const updateComment = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { desc } = req.body;
+
+        // console.log(id, desc);
+
+        const updatedComment = await db.comments.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                desc: desc,
+            },
+        });
+
+        if (!updatedComment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        res.json(updatedComment);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 module.exports = {
     getComments,
     addComment,
-    deleteComment
+    deleteComment,
+    updateComment
 };

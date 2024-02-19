@@ -1,19 +1,35 @@
 import "./comments.scss";
-import { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import SendIcon from "@mui/icons-material/Send";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../../config/axios";
 import moment from "moment";
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SendIcon from "@mui/icons-material/Send";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+
 
 export default function Comments({ postId }) {
   const [inputs, setInputs] = useState({ desc: "" });
+  const [editedDesc, setEditedDesc] = useState("");
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editCommentId, setEditCommentId] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const isInputEmpty = Object.values(inputs).every((value) => value === "");
 
   const mutation = useMutation(
     async (newComment) => {
@@ -32,8 +48,75 @@ export default function Comments({ postId }) {
     }
   );
 
+  const deleteMutation = useMutation(
+    (commentId) => {
+      return axios.delete(`/comments/${commentId}`);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["comments", postId]);
+      },
+      onError: (error) => {
+        console.error("Error deleting comment:", error);
+        // Handle error feedback to the user
+      },
+    }
+  );
+
+  const handleDelete = (commentId) => {
+    confirmAlert({
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete this comment?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => deleteMutation.mutate(commentId),
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+    });
+  }; 
+
+  const handleEdit = (commentId, initialDesc) => {
+    setEditedDesc(initialDesc);
+    setEditCommentId(commentId);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setEditDialogOpen(false);
+    setEditedDesc("");
+    setEditCommentId(null);
+  };
+  // Comments.jsx
+  const editMutation = useMutation(
+    async ({ commentId, desc }) => {
+      const res = await axios.put(`/comments/${commentId}`, { desc });
+      return res.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["comments", postId]);
+        handleEditDialogClose();
+      },
+      onError: (error) => {
+        console.error("Error editing comment:", error);
+        // Handle error feedback to the user
+      },
+    }
+  );
+
+  const handleEditSubmit = () => {
+    if (!editedDesc) return; // Prevent empty submissions
+    editMutation.mutate({ commentId: editCommentId, desc: editedDesc });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isInputEmpty) return; // Prevent empty submissions
     mutation.mutate({ desc: inputs.desc, postId });
   };
 
@@ -57,7 +140,7 @@ export default function Comments({ postId }) {
           value={inputs.desc}
           onChange={handleChange}
         />
-        <button onClick={handleSubmit}>
+        <button disabled={isInputEmpty} onClick={handleSubmit}>
           <SendIcon />
         </button>
       </div>
@@ -67,7 +150,7 @@ export default function Comments({ postId }) {
         ? "Loading..."
         : data.map((comment) => (
             <div className="comment" key={comment.id}>
-              <img src={"/upload/" + comment.profilePic} alt="" />
+              <img src={"/upload/" + comment.user.profilePic} alt="" />
               <div className="info">
                 <span>{comment.user.name}</span>
                 <p>{comment.desc}</p>
@@ -75,8 +158,93 @@ export default function Comments({ postId }) {
               <span className="date">
                 {moment(comment.createdAt).fromNow()}
               </span>
+              {currentUser.id === comment.usersid && (
+                <LongMenu
+                  handleDelete={() => handleDelete(comment.id)}
+                  handleEdit={() => handleEdit(comment.id, comment.desc)}
+                />
+              )}
             </div>
           ))}
+      {editDialogOpen && (
+        <CommentsEdit
+          handleEditDialogClose={handleEditDialogClose}
+          currentUser={currentUser}
+          editedDesc={editedDesc}
+          setEditedDesc={setEditedDesc}
+          handleEditSubmit={handleEditSubmit}
+        />
+      )}
     </div>
   );
 }
+
+function LongMenu({ handleDelete, handleEdit }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div className="postMenu">
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreVertIcon className="MoreVert" />
+      </IconButton>
+      <div className="itemMenu">
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleEdit} onClose={handleClose}>
+            <EditIcon /> Edit
+          </MenuItem>
+          <MenuItem onClick={handleDelete} onClose={handleClose}>
+            <DeleteIcon /> Delete
+          </MenuItem>
+        </Menu>
+      </div>
+    </div>
+  );
+}
+
+function CommentsEdit({ handleEditDialogClose, currentUser, editedDesc, setEditedDesc, handleEditSubmit }) {
+
+  const handleChange = (e) => {
+    setEditedDesc(e.target.value);
+  };
+
+  const isInputEmpty = !editedDesc;
+
+  return (
+    <div className="comments">
+      <div className="write">
+        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <input
+          type="text"
+          value={editedDesc}
+          onChange={handleChange}
+        />
+        <button disabled={isInputEmpty} onClick={handleEditSubmit} variant="contained" color="primary">
+          <SendIcon />
+        </button>
+        <div className="cancel-btn">
+        <small onClick={handleEditDialogClose} >Cancel</small>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+

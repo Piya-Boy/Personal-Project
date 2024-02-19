@@ -17,7 +17,7 @@ export default function Navbar() {
   const { currentUser } = useContext(AuthContext);
 
   // check profilePic
-  const profilePic ="/upload/"+ currentUser.profilePic || userProfile;
+  const profilePic = "/upload/"+ currentUser.profilePic || userProfile;
 
   return (
     <div className="navbar">

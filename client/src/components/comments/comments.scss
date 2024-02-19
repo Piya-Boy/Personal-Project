@@ -30,6 +30,7 @@
         background-color: #5271ff;
         color: white;
         padding: 10px;
+        align-items: center;
         cursor: pointer;
         box-shadow: 20px 20px 90px 0px rgb(0 0 0 / 40%);
         border-radius: 5px;
@@ -58,12 +59,22 @@
         }
       }
 
+          
       .date {
-        flex: 1;
+        display: flex;
+        align-items: center;
+        // flex: 1;
         align-self: center;
         color: gray;
         font-size: 12px;
       }
     }
   }
+}
+
+.cancel-btn {
+  cursor: pointer;
+  position: absolute;
+  margin: 58px 50px 0 72px;  
+  color: rgb(94, 138, 241);
 }

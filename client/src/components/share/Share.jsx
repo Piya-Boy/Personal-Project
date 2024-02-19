@@ -8,6 +8,8 @@ import userProfile from "../../assets/user.png";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "../../config/axios";
+
+ 
 export default function Share() {
   const [inputs, setInputs] = useState({ desc: "" }); // Assuming you have a "desc" field
   const [file, setFile] = useState(null);
@@ -30,14 +32,14 @@ export default function Share() {
       console.log(err);
     }
   };
+
   const { currentUser } = useContext(AuthContext);
   const profilePic = "/upload/" + currentUser.profilePic ?? userProfile;
 
+  const isInputEmpty = Object.values(inputs).every((value) => value === "");
+  const isFileSelected = file !== null;
 
-const isInputEmpty = Object.values(inputs).every((value) => value === "");
-const isFileSelected = file !== null;
-
-const isPostButtonDisabled = isInputEmpty && !isFileSelected;
+  const isPostButtonDisabled = isInputEmpty && !isFileSelected;
 
   const queryClient = useQueryClient();
 
