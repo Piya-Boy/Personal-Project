@@ -54,6 +54,7 @@ export default function Profile() {
 
   return (
     <div className="profile">
+      {/* <Update setOpenUpdate={setOpenUpdate} user={data} /> */}
       {isLoading ? (
         "loading"
       ) : (

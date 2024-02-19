@@ -1,4 +1,5 @@
 import "./comments.scss";
+// import { CommentsEdit } from "./CommentsEdit";
 import  { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -15,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SendIcon from "@mui/icons-material/Send";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import CommentsEdit from './CommentsEdit';
 
 
 export default function Comments({ postId }) {
@@ -207,10 +209,10 @@ function LongMenu({ handleDelete, handleEdit }) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleEdit} onClose={handleClose}>
+          <MenuItem onClick={handleEdit}>
             <EditIcon /> Edit
           </MenuItem>
-          <MenuItem onClick={handleDelete} onClose={handleClose}>
+          <MenuItem onClick={handleDelete}>
             <DeleteIcon /> Delete
           </MenuItem>
         </Menu>
@@ -218,33 +220,3 @@ function LongMenu({ handleDelete, handleEdit }) {
     </div>
   );
 }
-
-function CommentsEdit({ handleEditDialogClose, currentUser, editedDesc, setEditedDesc, handleEditSubmit }) {
-
-  const handleChange = (e) => {
-    setEditedDesc(e.target.value);
-  };
-
-  const isInputEmpty = !editedDesc;
-
-  return (
-    <div className="comments">
-      <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
-        <input
-          type="text"
-          value={editedDesc}
-          onChange={handleChange}
-        />
-        <button disabled={isInputEmpty} onClick={handleEditSubmit} variant="contained" color="primary">
-          <SendIcon />
-        </button>
-        <div className="cancel-btn">
-        <small onClick={handleEditDialogClose} >Cancel</small>
-
-        </div>
-      </div>
-    </div>
-  );
-}
-
