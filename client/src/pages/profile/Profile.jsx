@@ -37,7 +37,8 @@ export default function Profile() {
   const mutation = useMutation(
     (following) => {
       if (following)
-        return axios.delete("/relationships?userId=" + userId);
+        // console.log(userId)
+        return axios.delete(`/relationships/${userId}`);
       return axios.post("/relationships", { userId });
     },
     {

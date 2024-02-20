@@ -67,7 +67,7 @@ const addComment = async (req, res, next) => {
 };
 
 const deleteComment = async (req, res, next) => {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     try {
         const token = req.cookies.accessToken;
         if (!token) return res.status(401).json("Not authenticated!");

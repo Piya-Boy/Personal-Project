@@ -31,7 +31,7 @@ const getUser = async (req, res, next) => {
 }
 
 const updateUser = async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     
     const { username, password, email, name , city, website, profilePic, coverPic} = req.body;
     try {
