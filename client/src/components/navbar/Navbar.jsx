@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { useContext , useState } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
-import userProfile from "../../assets/user.png";
+import Avatar from "@mui/material/Avatar";
 import {
   Menu,
   MenuItem,
@@ -68,11 +68,6 @@ export default function Navbar() {
 
   };
 
-  // check profilePic
-  const profilePic = currentUser.profilePic
-    ? `/upload/${currentUser.profilePic}`
-    : userProfile;
-
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -123,12 +118,19 @@ export default function Navbar() {
             value={Input}
           />
           {Input && (
-            <CloseOutlinedIcon onClick={handleListItemClick} style={{ cursor: "pointer" }}/>
+            <CloseOutlinedIcon
+              onClick={handleListItemClick}
+              style={{ cursor: "pointer" }}
+            />
           )}
         </div>
-        <div className="search-result" >
+        <div className="search-result">
           {Input.length > 0 && (
-            <SeachResult users={Result} loading={loading} handleListItemClick={handleListItemClick} />
+            <SeachResult
+              users={Result}
+              loading={loading}
+              handleListItemClick={handleListItemClick}
+            />
           )}
         </div>
       </div>
@@ -137,7 +139,10 @@ export default function Navbar() {
         <EmailOutlinedIcon className="icon" />
         <NotificationsOutlinedIcon className="icon" />
         <div className="user" onClick={handleOpenUserMenu}>
-          <img src={profilePic} alt="Profile" />
+          <Avatar
+            alt={currentUser.name}
+            src={`/upload/${currentUser.profilePic}`}
+          />
           <span>{currentUser.name}</span>
         </div>
         <Menu

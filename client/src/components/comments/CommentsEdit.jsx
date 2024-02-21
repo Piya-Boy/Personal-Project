@@ -1,4 +1,5 @@
 import SendIcon from "@mui/icons-material/Send";
+import Avatar from "@mui/material/Avatar";
 export default function CommentsEdit({
   handleEditDialogClose,
   currentUser,
@@ -15,7 +16,10 @@ export default function CommentsEdit({
   return (
     <div className="comments">
       <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <Avatar
+          alt={currentUser.name}
+          src={`/upload/${currentUser.profilePic}`}
+        />
         <input type="text" value={editedDesc} onChange={handleChange} />
         <button
           disabled={isInputEmpty}

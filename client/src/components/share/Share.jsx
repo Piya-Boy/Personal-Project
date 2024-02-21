@@ -4,7 +4,7 @@ import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import userProfile from "../../assets/user.png";
+import Avatar from "@mui/material/Avatar";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "../../config/axios";
@@ -34,7 +34,6 @@ export default function Share() {
   };
 
   const { currentUser } = useContext(AuthContext);
-  const profilePic = "/upload/" + currentUser.profilePic ?? userProfile;
 
   const isInputEmpty = Object.values(inputs).every((value) => value === "");
   const isFileSelected = file !== null;
@@ -72,7 +71,10 @@ export default function Share() {
       <div className="container">
         <div className="top">
           <div className="left">
-            <img src={profilePic} alt="" />
+            <Avatar
+              alt={currentUser.name}
+              src={`/upload/${currentUser.profilePic}`}
+            />
             <input
               type="text"
               name="desc"

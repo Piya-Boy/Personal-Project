@@ -5,6 +5,10 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState, useContext } from "react";
@@ -14,9 +18,6 @@ import axios from "../../config/axios";
 import { AuthContext } from "../../context/authContext";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { IconButton, Menu, MenuItem } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Post({ post }) {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -85,8 +86,14 @@ export default function Post({ post }) {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <Link to={`/profile/${post.user.id}`} style={{ textDecoration: "none" }}>
-              <img src={"/upload/"+ post.user.profilePic } alt="" />
+            <Link
+              to={`/profile/${post.user.id}`}
+              style={{ textDecoration: "none" }}
+            >
+              <Avatar
+                alt={post.user.name}
+                src={`/upload/${post.user.profilePic}`}
+              />
             </Link>
             <div className="details">
               <Link
@@ -95,7 +102,7 @@ export default function Post({ post }) {
               >
                 <span className="name">{post.user.name}</span>
               </Link>
-             <span className="date">{moment(post.createdAt).fromNow()}</span>
+              <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
           <LongMenu handleDelete={handleDelete} />

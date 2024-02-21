@@ -8,6 +8,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Avatar from "@mui/material/Avatar";
 import Posts from "../../components/posts/Posts";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -55,14 +56,17 @@ export default function Profile() {
 
   return (
     <div className="profile">
-      {/* <Update setOpenUpdate={setOpenUpdate} user={data} /> */}
       {isLoading ? (
         "loading"
       ) : (
         <>
           <div className="images">
-            <img src={"/upload/"+data.coverPic} alt="" className="cover" />
-            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" />
+            <img  src={"/upload/" + data.coverPic} alt="" className="cover" />
+            <Avatar
+              alt={data.name}
+                src={`/upload/${data.profilePic}`}
+                className="profilePic"
+            />
           </div>
           <div className="profileContainer">
             <div className="uInfo">

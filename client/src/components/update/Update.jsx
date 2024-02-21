@@ -2,6 +2,7 @@ import "./update.scss";
 import { useMutation, useQueryClient } from "react-query";
 import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Avatar from "@mui/material/Avatar";
 import axios from "../../config/axios";
 import { useState } from "react";
 
@@ -68,7 +69,7 @@ const upload = async (file) => {
   return (
     <div className="update">
       <div className="wrapper">
-          <h2>Update Your Profile</h2>
+        <h2>Update Your Profile</h2>
         <form>
           <div className="files">
             <label htmlFor="cover">
@@ -94,14 +95,16 @@ const upload = async (file) => {
             <label htmlFor="profile">
               {/* <span>Profile Picture</span> */}
               <div className="profilePic">
-                <img
+                <Avatar
+                  alt={texts.name}
                   src={
                     profile
                       ? URL.createObjectURL(profile)
                       : "/upload/" + user.profilePic
                   }
-                  alt=""
+                  className="img"
                 />
+
                 <CloudUploadIcon className="icon" />
               </div>
             </label>

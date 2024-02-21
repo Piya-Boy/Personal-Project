@@ -14,6 +14,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SendIcon from "@mui/icons-material/Send";
+import Avatar from "@mui/material/Avatar";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import CommentsEdit from './CommentsEdit';
@@ -133,7 +134,11 @@ export default function Comments({ postId }) {
   return (
     <div className="comments">
       <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <Avatar
+          alt={currentUser.name}
+          src={`/upload/${currentUser.profilePic}`}
+        />
+
         <input
           type="text"
           placeholder="Write a comment"
@@ -152,7 +157,11 @@ export default function Comments({ postId }) {
         ? "Loading..."
         : data.map((comment) => (
             <div className="comment" key={comment.id}>
-              <img src={"/upload/" + comment.user.profilePic} alt="" />
+              <Avatar
+                alt={comment.user.name}
+                src={`/upload/${comment.user.profilePic}`}
+              />
+
               <div className="info">
                 <span>{comment.user.name}</span>
                 <p>{comment.desc}</p>

@@ -12,7 +12,7 @@ import Messages from "../../assets/10.png";
 import Tutorials from "../../assets/11.png";
 import Courses from "../../assets/12.png";
 import Fund from "../../assets/13.png";
-import userProfile from "../../assets/user.png";
+import Avatar from "@mui/material/Avatar";
 import { AuthContext } from "../../context/authContext";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
@@ -35,10 +35,7 @@ export default function LeftBar() {
                 gap: "10px",
               }}
             >
-              <img
-                src={"/upload/" + currentUser.profilePic || userProfile}
-                alt=""
-              />
+              <Avatar alt={currentUser.name} src={`/upload/${currentUser.profilePic}`} />
               <span>{currentUser.name}</span>
             </Link>
           </div>

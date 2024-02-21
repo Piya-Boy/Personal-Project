@@ -7,6 +7,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 
 
@@ -25,7 +27,15 @@ export default function SearchResult({ users, loading, handleListItemClick }) {
           users.map((user) => (
             <React.Fragment key={user.id}>
               {loading ? (
-                <ListItemText>Loading...</ListItemText>
+                <Typography
+                  variant="body3"
+                  display="flex"
+                  justifyContent="center"
+                >
+                  <Box>
+                    <CircularProgress />
+                  </Box>
+                </Typography>
               ) : (
                 <div className="Result">
                   <ListItem
