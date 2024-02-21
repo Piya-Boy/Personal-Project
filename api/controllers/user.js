@@ -70,7 +70,28 @@ const updateUser = async (req, res, next) => {
     }
 };
 
+// get user data for search
+const fetchUser = async (req, res, next) => {
+    try {
+        const users = await db.users.findMany(
+            {
+                select: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    profilePic: true
+                }
+            }
+        );
+        return res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     getUser,
-    updateUser
+    updateUser,
+    fetchUser
 }

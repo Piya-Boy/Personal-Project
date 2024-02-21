@@ -17,13 +17,22 @@
     :link {
       text-decoration: none;
       color: themed("textColor");
-
     }
 
     .left {
       display: flex;
       align-items: center;
       gap: 30px;
+
+      @include tablet {
+        gap: 25px;
+      }
+
+      .icon {
+        @include tablet {
+          display: none;
+        }
+      }
 
       span {
         font-weight: bold;
@@ -33,15 +42,16 @@
 
       .search {
         display: flex;
+        // position: relative;
         align-items: center;
         gap: 10px;
         border: 1px solid themed("border");
         border-radius: 5px;
         padding: 5px;
         border-radius: 50px;
-
-        
-
+  .search-result {
+        background-color: themed("bg");
+      }
         input {
           border: none;
           width: 500px;
@@ -61,6 +71,8 @@
           }
         }
       }
+
+    
     }
 
     .right {
@@ -68,8 +80,14 @@
       align-items: center;
       gap: 20px;
 
-      @include mobile {
-        display: none;
+      .icon {
+        @include tablet {
+          display: none;
+        }
+
+        @include mobile {
+          display: none;
+        }
       }
 
       .user {
@@ -77,9 +95,20 @@
         align-items: center;
         gap: 10px;
         font-weight: 500;
+        cursor: pointer;
 
         @include tablet {
-          display: none;
+          display: block;
+        }
+
+        @include mobile {
+          display: block;
+        }
+
+        span {
+          @include tablet {
+            display: none;
+          }
         }
 
         img {
@@ -88,8 +117,6 @@
           border-radius: 50%;
           object-fit: cover;
         }
-
-        
       }
     }
   }

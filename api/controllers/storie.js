@@ -35,7 +35,7 @@ const getStories = async (req, res, next) => {
             take: 4
         });
 
-        console.log(stories);
+        // console.log(stories);
         return res.status(200).json(stories);
     } catch (error) {
         console.error(error);

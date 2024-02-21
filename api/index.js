@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require('cors')
-// const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const notFound = require('./middlewares/notFound')
 const errorMiddleware = require('./middlewares/error')
