@@ -2,16 +2,16 @@ import "./posts.scss";
 import Post from "../post/Post";
 import { useQuery } from "react-query";
 import axios from "../../config/axios";
-import { useContext } from "react";
-import { AuthContext } from "../../context/authContext";
+// import { useContext } from "react";
+// import { AuthContext } from "../../context/authContext";
 import PostSkeleton from "../Skeleton/PostSkeleton";
 
-export default function Posts() {
-  const { currentUser } = useContext(AuthContext);
-  const userId = currentUser.id
+export default function Posts({ userId }) {
+  // const { currentUser } = useContext(AuthContext);
+  // const userId = currentUser.id
 
   const { isLoading, error, data } = useQuery(["posts", userId], async () => {
-    const res = await axios.get(`/posts?userId=${userId}`);
+    const res = await axios.get("/posts?userId=" + userId);
     return res.data;
   });
 

@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const getPosts = async (req, res, next) => {
     const userId = req.query.userId;
+    // console.log(userId);
     const token = req.cookies.accessToken;
 
     if (!token) {
@@ -13,9 +14,6 @@ const getPosts = async (req, res, next) => {
 
     try {
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
-
-
-        // console.log(userId);
 
         const posts = await db.posts.findMany({
             select: {
@@ -31,19 +29,15 @@ const getPosts = async (req, res, next) => {
                     },
                 },
             },
-            where: userId !== "undefined" ? { usersid: parseInt(userId) } : {
+            where: userId !== "undefined" && userId !== undefined && userId !== null ? { usersid: parseInt(userId) } : {
                 OR: [
                     { usersid: userInfo.id },
                     {
                         usersid: {
-                            in: {
-                                select: {
-                                    followedUserId: true,
-                                },
-                                where: {
-                                    followerUserId: userInfo.id,
-                                },
-                            },
+                            in: await db.relationships.findMany({
+                                where: { followerUserid: userInfo.id },
+                                select: { followedUserid: true },
+                            }).then((followedUsers) => followedUsers.map((user) => user.followedUserid)),
                         },
                     },
                 ],
@@ -59,6 +53,7 @@ const getPosts = async (req, res, next) => {
         return res.status(403).json({ error: "Token is not valid!" });
     }
 };
+
 const addPost = async (req, res, next) => {
     const { desc, img } = req.body;
 
@@ -99,6 +94,20 @@ const deletePost = async (req, res, next) => {
 
         if (!postId) return res.status(400).json({ error: "Invalid post ID!" });
 
+        // ลบไฟล์ที่เกี่ยวข้องในโฟลเดอร์ upload
+        const post = await db.posts.findFirst({ where: { id: parseInt(postId) } });
+        // console.log(post);
+        if (post && post.img) {
+            const filePath = path.join(__dirname, '../../client/public/', 'upload', post.img);
+            try {
+                await fs.promises.unlink(filePath); // Asynchronous file deletion
+                // console.log(`File ${post.img} has been deleted successfully.`);
+            } catch (unlinkError) {
+                console.error(`Error deleting file: ${unlinkError.message}`);
+            }
+
+        }
+
         // Use Prisma to delete the post
         const deletedPost = await db.posts.deleteMany({
             where: {
@@ -109,14 +118,6 @@ const deletePost = async (req, res, next) => {
 
         if (deletedPost.count === 0) {
             return res.status(403).json({ error: "You can delete only your post" });
-        }
-
-        // Delete associated files in the upload folder
-        const post = await db.posts.findUnique({ where: { id: parseInt(postId) } });
-        if (post && post.img) {
-            const filePath = path.join(__dirname, '../../client/public', 'upload', post.img);
-            console.log(filePath);
-            fs.unlinkSync(filePath); // Delete the file
         }
 
         return res.status(200).json({ message: "Post has been deleted." });

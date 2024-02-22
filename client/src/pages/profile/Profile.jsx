@@ -16,6 +16,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import axios from '../../config/axios';
 import Update from "../../components/update/Update";
+import Share from "../../components/share/Share"
 export default function Profile() {
   
  const [openUpdate, setOpenUpdate] = useState(false);
@@ -61,11 +62,11 @@ export default function Profile() {
       ) : (
         <>
           <div className="images">
-            <img  src={"/upload/" + data.coverPic} alt="" className="cover" />
+            <img src={"/upload/" + data.coverPic} alt="" className="cover" />
             <Avatar
               alt={data.name}
-                src={`/upload/${data.profilePic}`}
-                className="profilePic"
+              src={`/upload/${data.profilePic}`}
+              className="profilePic"
             />
           </div>
           <div className="profileContainer">
@@ -116,6 +117,8 @@ export default function Profile() {
                 <MoreVertIcon />
               </div>
             </div>
+            {isLoading ? "Loading..." : userId === currentUser.id && <Share />}
+
             <Posts userId={userId} />
           </div>
         </>
