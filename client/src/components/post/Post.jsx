@@ -105,7 +105,9 @@ export default function Post({ post }) {
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
-          <LongMenu handleDelete={handleDelete} />
+          {currentUser.id === post.user.id && (
+            <LongMenu handleDelete={handleDelete} />
+          )}
         </div>
         <div className="content">
           <p>{post.desc}</p>

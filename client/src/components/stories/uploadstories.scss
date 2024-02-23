@@ -13,9 +13,17 @@
     align-items: center;
     justify-content: center;
     z-index: 999;
-
     animation: fadeIn 0.5s ease; /* Add fade-in animation */
 
+    @include tablet {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    @include mobile {
+      height: 100vh;
+      width: 100vw;
+    }
     .wrapper {
       margin: auto;
       width: 30%;
@@ -32,9 +40,12 @@
       position: relative;
       border-radius: 16px;
 
+      @include tablet {
+        width: 50%;
+      }
+
       @include mobile {
         width: 100%;
-        height: 100%;
       }
 
       h2 {
@@ -46,20 +57,22 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+
         .content {
           width: 80%;
           // padding-top: 20px;
           margin: auto;
           height: 550px;
           position: relative;
-          // border: 2px dashed lightgray;
           cursor: pointer;
+
           img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: 5px;
           }
+
           .icon {
             position: absolute;
             top: 0;
@@ -67,12 +80,12 @@
             left: 0;
             right: 0;
             margin: auto;
-            font-size: 50px;
-            color: themed("textColor");
+            font-size: 90px;
+            color: themed("textColorSoft");
             opacity: 0.2;
-            //   cursor: pointer;
           }
         }
+
         button {
           border: none;
           padding: 10px;
@@ -94,8 +107,17 @@
       .cancel {
         position: absolute;
         top: 90px;
-        right: 90px;
+        right: 96px;
         cursor: pointer;
+        color: themed("textColorSoft");
+
+        @include tablet {
+          right: 80px;
+        }
+
+        @include mobile {
+          right: 67px;
+        }
       }
     }
   }

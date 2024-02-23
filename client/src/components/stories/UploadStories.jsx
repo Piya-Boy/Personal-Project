@@ -92,10 +92,8 @@ const handleClick = async (e) => {
   try {
     const resizedFile = await resizeImage(file, 500, 700);
     const imgUrl = await upload(resizedFile);
-    console.log(imgUrl); // Handle response from server as needed
-
-    // Pass the uploaded image URL to the mutation
-    mutation.mutate({ img: imgUrl }); // Assuming imgUrl contains the uploaded image URL
+    console.log(imgUrl);
+    mutation.mutate({ img: imgUrl }); 
   } catch (error) {
     console.error("Error uploading image:", error);
   }
@@ -112,7 +110,7 @@ const handleClick = async (e) => {
           <label htmlFor="upload">
             <div className="content">
               {file && <img src={URL.createObjectURL(file)} alt="Preview" />}
-              <BrokenImageOutlinedIcon className="icon" />
+              {file ? "" : <BrokenImageOutlinedIcon className="icon" />}
               <input
                 type="file"
                 id="upload"
@@ -122,11 +120,13 @@ const handleClick = async (e) => {
             </div>
           </label>
 
-          <button disabled={isFileSelected} onClick={handleClick}>
-            Upload
-          </button>
+          {file && (
+            <button disabled={isFileSelected} onClick={handleClick}>
+              Upload
+            </button>
+          )}
         </form>
-        {file && <CloseIcon className="cancel" onClick={()=>setFile(null)} />}
+        {file && <CloseIcon className="cancel" onClick={() => setFile(null)} />}
         <CloseIcon className="close" onClick={() => setOpenUpload(false)} />
       </div>
     </div>

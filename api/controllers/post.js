@@ -9,7 +9,7 @@ const getPosts = async (req, res, next) => {
     const token = req.cookies.accessToken;
 
     if (!token) {
-        return res.status(401).json({ error: "Not logged in!" });
+        return next(createError(401, "Not logged in!"));
     }
 
     try {
@@ -50,7 +50,7 @@ const getPosts = async (req, res, next) => {
         return res.status(200).json(posts);
     } catch (error) {
         console.error(error);
-        return res.status(403).json({ error: "Token is not valid!" });
+        return next(createError(500, "Internal server error!"));
     }
 };
 
@@ -58,10 +58,11 @@ const addPost = async (req, res, next) => {
     const { desc, img } = req.body;
 
     const token = req.cookies.accessToken;
-    if (!token) return res.status(401).json({ error: "Not logged in!" });
+    if (!token)
+        return next(createError(401, "Not logged in!"));
 
     jwt.verify(token, process.env.SECRET_KEY, async (err, userInfo) => {
-        if (err) return res.status(403).json({ error: "Token is not valid!" });
+        if (err) return  next(createError(403, "Token is not valid!"));
 
         try {
             const newPost = await db.posts.create({
@@ -73,10 +74,10 @@ const addPost = async (req, res, next) => {
                 }
             });
 
-            return res.status(200).json({ message: "Post has been created." });
+            return  next(createError(200, "Post has been created."));
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ error: "Error creating the post." });
+            return next(createError(500, "Internal server error!"));
         }
     });
 };
@@ -85,14 +86,14 @@ const deletePost = async (req, res, next) => {
     try {
         // Verify user authentication
         const token = req.cookies.accessToken;
-        if (!token) return res.status(401).json({ error: "Not logged in!" });
+        if (!token) return next(createError(401, "Not logged in!"));
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
         // Extract post ID from the request parameters
         const postId = req.params.id || req.query.id;
 
-        if (!postId) return res.status(400).json({ error: "Invalid post ID!" });
+        if (!postId) return next(createError(400, "Post ID is required!"));
 
         // ลบไฟล์ที่เกี่ยวข้องในโฟลเดอร์ upload
         const post = await db.posts.findFirst({ where: { id: parseInt(postId) } });
@@ -117,13 +118,13 @@ const deletePost = async (req, res, next) => {
         });
 
         if (deletedPost.count === 0) {
-            return res.status(403).json({ error: "You can delete only your post" });
+            return next(createError(404, "Post not found!"));
         }
 
-        return res.status(200).json({ message: "Post has been deleted." });
+        return next(createError(200, "Post has been deleted."));
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error!"));
     }
 };
 

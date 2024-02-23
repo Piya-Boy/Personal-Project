@@ -41,7 +41,7 @@ const updateUser = async (req, res, next) => {
         const token = req.cookies.accessToken;
 
         if (!token) {
-            return res.status(401).json({ error: "Not authenticated!" });
+            return next(createError(401, "Not logged in!"))
         }
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
@@ -87,13 +87,13 @@ const updateUser = async (req, res, next) => {
         });
 
         if (!updatedUser) {
-            return res.status(404).json({ error: "User not found or not authorized to update." });
+            return next(createError(404, "User not found!"));
         }
 
-        return res.status(200).json({ message: "User information updated successfully.", user: updatedUser });
+        return next(createError(200, "User has been updated!"));
     } catch (error) {
-        console.error(error);
-        return res.status(403).json({ error: "Token is not valid!" });
+        // console.error(error);
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -113,7 +113,7 @@ const fetchUser = async (req, res, next) => {
         return res.status(200).json(users);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 }
 

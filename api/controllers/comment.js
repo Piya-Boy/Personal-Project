@@ -6,7 +6,7 @@ const getComments = async (req, res, next) => {
     try {
         // Extract post ID from the request query parameters
         const postId = req.query.postId || req.body.postId;
-        if (!postId) return res.status(400).json({ error: "Invalid post ID!" });
+        if (!postId) return next(createError(400, "Post ID is required!"));
 
         // console.log(postId);
 
@@ -38,7 +38,7 @@ const getComments = async (req, res, next) => {
         return res.status(200).json(comments);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -47,9 +47,11 @@ const addComment = async (req, res, next) => {
         const { desc, postId } = req.body;
         const token = req.cookies.accessToken;
 
-        if (!token) return res.status(401).json("Not logged in!");
+        if (!token) return next(createError(401, "Not authenticated!"));
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
+        if (!userInfo) return next(createError(403, "Token is not valid!"));
+
         const newComment = await db.comments.create({
             data: {
                 desc,
@@ -62,7 +64,7 @@ const addComment = async (req, res, next) => {
         return res.status(200).json(newComment);
     } catch (error) {
         console.error(error);
-        return res.status(500).json("Internal server error");
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -70,10 +72,10 @@ const deleteComment = async (req, res, next) => {
     // console.log(req.params.id);
     try {
         const token = req.cookies.accessToken;
-        if (!token) return res.status(401).json("Not authenticated!");
+        if (!token) return next(createError(401, "Not authenticated!"));
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
-        if (!userInfo) return res.status(403).json("Token is not valid!");
+        if (!userInfo) return next(createError(403, "Token is not valid!"));
 
         const commentId = req.params.id || req.query.id;
 
@@ -85,13 +87,13 @@ const deleteComment = async (req, res, next) => {
         });
 
         if (deletedComment) {
-            return res.json("Comment has been deleted!");
+            return next(createError(200, "Comment has been deleted!"));
         } else {
-            return res.status(403).json("You can delete only your comment!");
+            return next(createError(403, "You are not authorized to delete this comment!"));
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -112,13 +114,13 @@ const updateComment = async (req, res, next) => {
         });
 
         if (!updatedComment) {
-            return res.status(404).json({ message: 'Comment not found' });
+            return next(createError(404, 'Comment not found'));
         }
 
         res.json(updatedComment);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        return next(createError(500, "Internal server error"));
     }
 };
 

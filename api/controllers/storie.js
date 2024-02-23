@@ -5,7 +5,7 @@ const getStories = async (req, res, next) => {
     try {
         const token = req.cookies.accessToken;
         if (!token) {
-            return res.status(401).json("Not logged in!");
+            return next(createError(401, "Not logged in!"));
         }
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
@@ -35,11 +35,11 @@ const getStories = async (req, res, next) => {
             take: 5
         });
 
-        console.log(stories);
+        // console.log(stories);
         return res.status(200).json(stories);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        // console.error(error);
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -51,7 +51,7 @@ const addStory = async (req, res, next) => {
         const token = req.cookies.accessToken;
 
         if (!token) {
-            return res.status(401).json("Not logged in!");
+            return next(createError(401, "Not logged in!"));
         }
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
@@ -63,10 +63,10 @@ const addStory = async (req, res, next) => {
             }
         });
 
-        return res.status(200).json({ message: "Story has been created." });
+        return next(createError(200, "Story has been created."));
     }catch(err){
         console.log(err);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 

@@ -117,6 +117,8 @@ const logout = (req, res, next) => {
         secure: true,
         sameSite: "none",
     });
+
+    
     return res.status(200).json("User has been logged out.");
 };
 

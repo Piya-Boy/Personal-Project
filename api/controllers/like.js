@@ -5,7 +5,7 @@ const getLikes = async (req, res, next) => {
     try {
         const postId = req.body.postId || req.query.postId;
         if (!postId) {
-            return res.status(400).json({ error: "Invalid postId parameter" });
+            return next(createError(400, "Post ID is required!"));
         }
 
         const likes = await db.likes.findMany({
@@ -21,7 +21,7 @@ const getLikes = async (req, res, next) => {
         return res.status(200).json(userIds);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 const addLike = async (req, res, next) => {
@@ -29,7 +29,7 @@ const addLike = async (req, res, next) => {
         // Verify user authentication
         const token = req.cookies.accessToken;
         if (!token) {
-            return res.status(401).json({ error: "Not logged in!" });
+            return next(createError(401, "Not logged in!"));
         }
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
@@ -37,7 +37,7 @@ const addLike = async (req, res, next) => {
         // Extract post ID from request body or query parameters
         const postId = req.body.postId || req.query.postId;
         if (!postId) {
-            return res.status(400).json({ error: "Post ID is required!" });
+            return next(createError(400, "Post ID is required!"));
         }
 
         // Create new like using Prisma
@@ -48,10 +48,10 @@ const addLike = async (req, res, next) => {
             }
         });
 
-        return res.status(200).json({ message: "Post has been liked." });
+        return next(createError(200, "Post has been liked!"));
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -60,7 +60,7 @@ const deleteLike = async (req, res, next) => {
         // Verify user authentication
         const token = req.cookies.accessToken;
         if (!token) {
-            return res.status(401).json({ error: "Not logged in!" });
+            return next(createError(401, "Not logged in!"));
         }
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
@@ -71,7 +71,7 @@ const deleteLike = async (req, res, next) => {
         // console.log(postId );
 
         if (!postId) {
-            return res.status(400).json({ error: "Post ID is required!" });
+            return next(createError(400, "Post ID is required!"));
         }
 
         // Delete the like using Prisma
@@ -83,13 +83,13 @@ const deleteLike = async (req, res, next) => {
         });
 
         if (deletedLike.count === 0) {
-            return res.status(404).json({ error: "Like not found!" });
+            return next(createError(400, "Post has not been liked!"));
         }
 
-        return res.status(200).json({ message: "Post has been disliked." });
+        return next(createError(200, "Post has been unliked!"));
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 

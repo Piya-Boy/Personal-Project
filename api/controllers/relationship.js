@@ -14,13 +14,12 @@ const getRelationships = async (req, res, next) => {
             },
         });
 
-        // Extract followerUserIds from the result and send as JSON response
         const followerUserIdsArray = followerUserIds.map((relationship) => relationship.followerUserid);
         return res.status(200).json(followerUserIdsArray);
     } catch (error) {
         // Handle errors
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -30,10 +29,10 @@ const addRelationship = async (req, res, next) => {
         const { userId } = req.body || req.params;
 
         const token = req.cookies.accessToken;
-        if (!token) return res.status(401).json("Not logged in!");
+        if (!token) return next(createError(401, "Not logged in!"));
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
-        if (!userInfo) return res.status(403).json("Token is not valid!");
+        if (!userInfo) return next(createError(403, "Token is not valid!"));
 
         // Create a relationship in the database
         const newRelationship = await db.relationships.create({
@@ -43,10 +42,10 @@ const addRelationship = async (req, res, next) => {
             }
         });
 
-        return res.status(200).json("Following");
+        return next(createError(200, "Followed user!"));
     } catch (error) {
         console.error(error);
-        return res.status(500).json("Internal server error");
+        return next(createError(500, "Internal server error"));
     }
 };
 
@@ -56,10 +55,10 @@ const deleteRelationship = async (req, res, next) => {
 
         const { userId } = req.query.id || req.params.id;
         const token = req.cookies.accessToken;
-        if (!token) return res.status(401).json("Not logged in!");
+        if (!token) return next(createError(401, "Not logged in!"));
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
-        if (!userInfo) return res.status(403).json("Token is not valid!");
+        if (!userInfo) return next(createError(403, "Token is not valid!"));
 
         // Delete the relationship from the database
         const deletedRelationship = await db.relationships.deleteMany({
@@ -70,13 +69,13 @@ const deleteRelationship = async (req, res, next) => {
         });
 
         if (deletedRelationship.count > 0) {
-            return res.status(200).json("Unfollow");
+            return next(createError(200, "Unfollowed user!"));
         } else {
-            return res.status(404).json("Relationship not found");
+            return next(createError(403, "You are not authorized to unfollow this user!"));
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json("Internal server error");
+        return next(createError(500, "Internal server error"));
     }
 };
 

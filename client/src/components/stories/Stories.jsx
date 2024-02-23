@@ -13,7 +13,7 @@ export default function Stories() {
     return res.data;
   });
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="stories">
