@@ -25,7 +25,7 @@ export default function Stories() {
       {/* <UploadStories /> */}
       {openUpload && <UploadStories setOpenUpload={setOpenUpload} />}
       {error
-        ? "Something went wrong"
+        ? ""
         : isLoading
         ? "loading"
         : data.map((story) => (

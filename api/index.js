@@ -12,7 +12,9 @@ const likeRoute = require('./routes/likes.js')
 const storyRoute = require('./routes/stories.js')
 const ralationshipRoute = require('./routes/relationships.js')
 const multer = require('multer');
+const path = require("path");
 const app = express();
+
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", true);
@@ -24,7 +26,8 @@ app.use(express.json());
 app.use(cors(
     {
         origin: "http://localhost:3000",
-        credentials: true
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
     }
 ));
 
@@ -35,7 +38,10 @@ app.use(cookieParser());
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "../client/public/upload");
+        // cb(null, "../client/public/upload");
+        const uploadPath = path.join(__dirname, '../client/public/upload');
+        console.log(uploadPath);
+        cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + file.originalname);

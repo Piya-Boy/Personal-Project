@@ -101,7 +101,9 @@ const login = async (req, res, next) => {
         const { password, ...others } = user || {};
 
         res.cookie("accessToken", token, {
-            httpOnly: true
+            secure: true,      
+            httpOnly: true,
+            sameSite: "none"
         });
 
         return res.status(200).json(others);
