@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get('/', getRelationships)
 router.post('/', addRelationship)
-router.delete('/:id', deleteRelationship)
+router.delete('/', deleteRelationship)
 
 module.exports = router

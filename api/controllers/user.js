@@ -34,15 +34,14 @@ const getUser = async (req, res, next) => {
 }
 
 const updateUser = async (req, res, next) => {
-    // console.log(req.body);
-    
-    const { username, password, email, name , city, website, profilePic, coverPic} = req.body;
+    const { username, password, email, name, city, website, profilePic, coverPic } = req.body;
     try {
         const token = req.cookies.accessToken;
 
         if (!token) {
             return next(createError(401, "Not logged in!"))
         }
+
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
         const userss = await db.users.findFirst({
@@ -51,9 +50,9 @@ const updateUser = async (req, res, next) => {
             }
         })
 
-        if (userss.profilePic !== profilePic){
+        // Check if profilePic or coverPic has changed, and delete the old files if they have
+        if (userss.profilePic && userss.profilePic !== profilePic) {
             const filePath = path.join(__dirname, '../../client/public/upload', userss.profilePic);
-            console.log(filePath);
             try {
                 await fs.promises.unlink(filePath); // Asynchronous file deletion
             } catch (unlinkError) {
@@ -61,17 +60,17 @@ const updateUser = async (req, res, next) => {
             }
         }
 
-        if(userss.coverPic !== coverPic){
+        if (userss.coverPic && userss.coverPic !== coverPic) {
             const filePath = path.join(__dirname, '../../client/public/upload', userss.coverPic);
-            console.log(filePath);
             try {
                 await fs.promises.unlink(filePath); // Asynchronous file deletion
-            }catch (unlinkError) {
+            } catch (unlinkError) {
                 console.error(`Error deleting file: ${unlinkError.message}`);
             }
         }
 
 
+        // Update the user's information
         const updatedUser = await db.users.update({
             where: {
                 id: userInfo.id,
@@ -92,12 +91,13 @@ const updateUser = async (req, res, next) => {
             return next(createError(404, "User not found!"));
         }
 
-        return next(createError(200, "User has been updated!"));
+        return res.status(200).json({ message: "User has been updated!" });
     } catch (error) {
-        // console.error(error);
+        console.error(error);
         return next(createError(500, "Internal server error"));
     }
 };
+
 
 // get user data for search
 const fetchUser = async (req, res, next) => {

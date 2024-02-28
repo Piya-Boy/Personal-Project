@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function Update({ setOpenUpdate, user }) {
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
-    const [texts, setTexts] = useState({
+  const [texts, setTexts] = useState({
     username: user.username,
     email: user.email,
     password: user.password,
@@ -18,24 +18,22 @@ export default function Update({ setOpenUpdate, user }) {
     website: user.website,
   });
 
-
-const upload = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await axios.post("/upload", formData);
-    return res.data;
-  } catch (err) {
-    console.log(err);
-  }
-};
-  // console.log(data);
+  const upload = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/upload", formData);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
   
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-    // console.log(texts.password);
+  // console.log(texts.password);
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
@@ -48,23 +46,21 @@ const upload = async (file) => {
         queryClient.invalidateQueries(["user"]);
       },
     }
-    );
-    
+  );
+
   const handleClick = async (e) => {
     e.preventDefault();
-
-    //TODO: find a better way to get image UR
 
     let coverUrl;
     let profileUrl;
     coverUrl = cover ? await upload(cover) : user.coverPic;
     profileUrl = profile ? await upload(profile) : user.profilePic;
-
-    mutation.mutate({ ...texts,  coverPic: coverUrl, profilePic: profileUrl });
+    mutation.mutate({ ...texts, coverPic: coverUrl, profilePic: profileUrl });
     setOpenUpdate(false);
     setCover(null);
     setProfile(null);
   };
+
 
   return (
     <div className="update">

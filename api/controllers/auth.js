@@ -21,7 +21,7 @@ const register = async (req, res, next) => {
     const { error } = schema.validate({ username, password, email, name });
 
     if (error) {
-      return res.status(400).json(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
     }
 
     try {
@@ -34,7 +34,7 @@ const register = async (req, res, next) => {
                 ]
             }
         });
-        
+
         if (existingUser) {
             return res.status(409).json("User already exists");
         }
@@ -101,7 +101,7 @@ const login = async (req, res, next) => {
         const { password, ...others } = user || {};
 
         res.cookie("accessToken", token, {
-            secure: true,      
+            secure: true,
             httpOnly: true,
             sameSite: "none"
         });
@@ -120,7 +120,7 @@ const logout = (req, res, next) => {
         sameSite: "none",
     });
 
-    
+
     return res.status(200).json("User has been logged out.");
 };
 

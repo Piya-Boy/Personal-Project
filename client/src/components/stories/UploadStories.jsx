@@ -2,7 +2,7 @@ import "./uploadstories.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import BrokenImageOutlinedIcon from "@mui/icons-material/BrokenImageOutlined";
 import { useState } from "react";
-import { useQuery, useQueryClient, useMutation } from "react-query";
+import { useQueryClient, useMutation } from "react-query";
 import axios from "../../config/axios";
 
 export default function UploadStories({ setOpenUpload }) {

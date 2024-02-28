@@ -1,4 +1,4 @@
-import './profile.scss'
+import "./profile.scss";
 import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -14,42 +14,47 @@ import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import axios from '../../config/axios';
+import axios from "../../config/axios";
 import Update from "../../components/update/Update";
-import Share from "../../components/share/Share"
+import Share from "../../components/share/Share";
 export default function Profile() {
-  
- const [openUpdate, setOpenUpdate] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const { currentUser } = useContext(AuthContext);
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
-  const { isLoading, error, data } = useQuery(["user", userId], async () =>{
-    const res = await axios.get(`/users/find/${userId}`);
+  const { isLoading, data } = useQuery(["user", userId], async () => {
+    const res = await axios.get("/users/find/" + userId);
     return res.data;
   });
 
-  const { isLoading: rIsLoading, data: relationshipData } = useQuery(["relationship"], async () => {
-    const res = await axios.get("/relationships?followedUserId=" + userId);
-    return res.data;
-  });
+  const { isLoading: rIsLoading, data: relationshipData } = useQuery(
+    ["relationship", userId],
+    async () => {
+      const res = await axios.get("/relationships?followedUserId=" + userId);
+      return res.data;
+    }
+  );
+
+
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(
-    (following) => {
-      if (following)
-        // console.log(userId)
-        return axios.delete(`/relationships/${userId}`);
-      return axios.post("/relationships", { userId });
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["relationship"]);
-      },
-    }
-  );
+ const mutation = useMutation(
+   (following) => {
+     if (following) {
+       return axios.delete(`/relationships?userId=${userId}`);
+     }
+     return axios.post("/relationships", { userId });
+   },
+   {
+     onSuccess: () => {
+       // Invalidate and refetch
+       queryClient.invalidateQueries(["relationship", userId]);
+     },
+   }
+ );
+
 
   const handleFollow = () => {
     mutation.mutate(relationshipData.includes(currentUser.id));
@@ -110,6 +115,7 @@ export default function Profile() {
                       ? "Following"
                       : "Follow"}
                   </button>
+                  
                 )}
               </div>
               <div className="right">
@@ -126,6 +132,4 @@ export default function Profile() {
       {openUpdate && <Update setOpenUpdate={setOpenUpdate} user={data} />}
     </div>
   );
-};
-
-
+}

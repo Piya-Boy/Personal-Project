@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 const getComments = async (req, res, next) => {
     try {
         // Extract post ID from the request query parameters
-        const postId = req.query.postId || req.body.postId;
-        if (!postId) return next(createError(400, "Post ID is required!"));
-
-        // console.log(postId);
+        const postId = req.query.postId;
+        if (!postId) {
+            return next(createError(400, "Post ID is required!"));
+        }
 
         // Retrieve comments associated with the specified post ID
         const comments = await db.comments.findMany({
@@ -32,8 +32,6 @@ const getComments = async (req, res, next) => {
                 createdAt: 'desc'
             }
         });
-
-
 
         return res.status(200).json(comments);
     } catch (error) {

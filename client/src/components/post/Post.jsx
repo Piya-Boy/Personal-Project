@@ -168,7 +168,7 @@ function LongMenu({ handleDelete }) {
           onClose={handleClose}
           PaperProps={{
             style: {
-             left: 40 + "px",
+              left: 40 + "px",
             },
           }}
         >

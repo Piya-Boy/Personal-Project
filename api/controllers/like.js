@@ -48,7 +48,8 @@ const addLike = async (req, res, next) => {
             }
         });
 
-        return next(createError(200, "Post has been liked!"));
+        // Return a success response
+        return res.status(200).json({ message: "Post has been liked!" });
     } catch (error) {
         console.error(error);
         return next(createError(500, "Internal server error"));
@@ -68,8 +69,6 @@ const deleteLike = async (req, res, next) => {
         // Extract post ID from request query parameters
         const postId = req.params.id || req.query.id;
 
-        // console.log(postId );
-
         if (!postId) {
             return next(createError(400, "Post ID is required!"));
         }
@@ -86,7 +85,8 @@ const deleteLike = async (req, res, next) => {
             return next(createError(400, "Post has not been liked!"));
         }
 
-        return next(createError(200, "Post has been unliked!"));
+        // Return a success response
+        return res.status(200).json({ message: "Post has been unliked!" });
     } catch (error) {
         console.error(error);
         return next(createError(500, "Internal server error"));

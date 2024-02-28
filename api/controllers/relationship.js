@@ -1,5 +1,5 @@
 const createError = require("../utils/createError");
-const db = require("../config/connect.js"); 
+const db = require("../config/connect.js");
 const jwt = require("jsonwebtoken");
 
 const getRelationships = async (req, res, next) => {
@@ -25,8 +25,7 @@ const getRelationships = async (req, res, next) => {
 
 const addRelationship = async (req, res, next) => {
     try {
-    
-        const { userId } = req.body || req.params;
+        const { userId } = req.body;
 
         const token = req.cookies.accessToken;
         if (!token) return next(createError(401, "Not logged in!"));
@@ -38,11 +37,11 @@ const addRelationship = async (req, res, next) => {
         const newRelationship = await db.relationships.create({
             data: {
                 followerUserid: userInfo.id,
-                followedUserid: parseInt(userId), 
+                followedUserid: parseInt(userId),
             }
         });
 
-        return next(createError(200, "Followed user!"));
+        return res.status(200).json({ message: "Followed user!" });
     } catch (error) {
         console.error(error);
         return next(createError(500, "Internal server error"));
@@ -50,10 +49,9 @@ const addRelationship = async (req, res, next) => {
 };
 
 const deleteRelationship = async (req, res, next) => {
-    // console.log(req.query.id || req.params.id);
     try {
+        const { userId } = req.query;
 
-        const { userId } = req.query.id || req.params.id;
         const token = req.cookies.accessToken;
         if (!token) return next(createError(401, "Not logged in!"));
 
@@ -64,12 +62,12 @@ const deleteRelationship = async (req, res, next) => {
         const deletedRelationship = await db.relationships.deleteMany({
             where: {
                 followerUserid: userInfo.id,
-                followedUserid: userId,
-         }
+                followedUserid: parseInt(userId),
+            }
         });
 
         if (deletedRelationship.count > 0) {
-            return next(createError(200, "Unfollowed user!"));
+            return res.status(200).json({ message: "Unfollowed user!" });
         } else {
             return next(createError(403, "You are not authorized to unfollow this user!"));
         }

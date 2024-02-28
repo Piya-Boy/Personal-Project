@@ -27,7 +27,6 @@ app.use(cors(
     {
         origin: "http://localhost:3000",
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE"],
     }
 ));
 
@@ -40,7 +39,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // cb(null, "../client/public/upload");
         const uploadPath = path.join(__dirname, '../client/public/upload');
-        console.log(uploadPath);
+        // console.log(uploadPath);
         cb(null, uploadPath);
     },
     filename: function (req, file, cb) {

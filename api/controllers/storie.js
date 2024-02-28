@@ -10,7 +10,6 @@ const getStories = async (req, res, next) => {
 
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
-        // console.log(userInfo.id);
         const stories = await db.stories.findMany({
             select: {
                 id: true,
@@ -27,7 +26,6 @@ const getStories = async (req, res, next) => {
                     followedBy: {
                         some: {
                             followerUserid: userInfo.id
-                            
                         }
                     }
                 }
@@ -35,10 +33,9 @@ const getStories = async (req, res, next) => {
             take: 5
         });
 
-        // console.log(stories);
         return res.status(200).json(stories);
     } catch (error) {
-        // console.error(error);
+        console.error(error);
         return next(createError(500, "Internal server error"));
     }
 };
@@ -48,14 +45,21 @@ const addStory = async (req, res, next) => {
     const { img } = req.body;
 
     try {
+        // Check if user is logged in
         const token = req.cookies.accessToken;
-
         if (!token) {
             return next(createError(401, "Not logged in!"));
         }
 
+        // Verify user information from token
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
 
+        // Validate image data
+        if (!img) {
+            return next(createError(400, "Image data is required!"));
+        }
+
+        // Create new story
         const newStory = await db.stories.create({
             data: {
                 img,
@@ -63,9 +67,9 @@ const addStory = async (req, res, next) => {
             }
         });
 
-        return next(createError(200, "Story has been created."));
-    }catch(err){
-        console.log(err);
+        return res.status(200).json({ message: "Story has been created.", newStory });
+    } catch (error) {
+        console.error(error);
         return next(createError(500, "Internal server error"));
     }
 };
