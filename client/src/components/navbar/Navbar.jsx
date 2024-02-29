@@ -2,7 +2,7 @@ import "./navbar.scss";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
-import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
+import QrCode2OutlinedIcon from "@mui/icons-material/QrCode2Outlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -96,8 +96,8 @@ export default function Navbar() {
           <span>{"<DEVBOOK/>"}</span>
         </Link>
 
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <HomeOutlinedIcon />
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <HomeOutlinedIcon  className="icon"/>
         </Link>
 
         <div style={{ cursor: "pointer" }}>
@@ -108,7 +108,7 @@ export default function Navbar() {
           )}
         </div>
 
-        <GridViewOutlinedIcon className="icon" />
+        <QrCode2OutlinedIcon />
         <div className="search">
           <SearchOutlinedIcon />
           <input

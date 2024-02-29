@@ -12,7 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Posts from "../../components/posts/Posts";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/authContext";
 import axios from "../../config/axios";
 import Update from "../../components/update/Update";
@@ -27,6 +27,11 @@ export default function Profile() {
     const res = await axios.get("/users/find/" + userId);
     return res.data;
   });
+
+  // title
+  useEffect(() => {
+    document.title = data?.name;
+  })
 
   const { isLoading: rIsLoading, data: relationshipData } = useQuery(
     ["relationship", userId],

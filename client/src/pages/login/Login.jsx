@@ -1,6 +1,6 @@
 import "./login.scss";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/authContext";
 
 export default function Login() {
@@ -8,6 +8,11 @@ export default function Login() {
     username: "",
     password: "",
   });
+
+  // title
+  useEffect(() => {
+    document.title = "Login";
+  })
 
   const [errors, setErrors] = useState({});
 

@@ -1,7 +1,7 @@
 import "./register.scss";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../config/axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Register() {
   const [input, setInput] = useState({
@@ -11,6 +11,10 @@ export default function Register() {
     name: "",
   });
 
+  // title
+  useEffect(() => {
+    document.title = "Register";
+  })
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
