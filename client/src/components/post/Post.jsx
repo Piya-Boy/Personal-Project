@@ -18,11 +18,13 @@ import axios from "../../config/axios";
 import { AuthContext } from "../../context/authContext";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { useAlert } from  "react-alert";
 
 export default function Post({ post }) {
   const [commentOpen, setCommentOpen] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
+  const alert = useAlert();
 
   const { isLoading: likesLoading, data: likesData } = useQuery(
     ["likes", post.id],
@@ -55,10 +57,27 @@ export default function Post({ post }) {
     },
     {
       onSuccess: () => {
+        alert.success("Post deleted successfully!");
         queryClient.invalidateQueries(["posts"]);
       },
     }
   );
+
+   const shareMutation = useMutation(
+     () => axios.post("/shares", { postId: post.id }),
+     {
+       onSuccess: () => {
+         // Optionally, update UI to reflect the post has been shared
+         console.log("Post shared successfully!");
+         alert.success("Post shared successfully!");
+       },
+     }
+   );
+
+  const handleShare = () => {
+    alert.success("Post shared successfully!");
+     shareMutation.mutate();
+   };
 
   const handleLike = () => {
     mutation.mutate(likesData.includes(currentUser.id));
@@ -128,7 +147,7 @@ export default function Post({ post }) {
             <TextsmsOutlinedIcon />
             {commentData?.length} Comments
           </div>
-          <div className="item">
+          <div className="item" onClick={handleShare} >
             <ShareOutlinedIcon />
             Share
           </div>

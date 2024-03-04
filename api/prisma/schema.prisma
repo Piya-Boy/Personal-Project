@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,18 +9,18 @@ datasource db {
 
 model Comments {
   id        Int      @id @default(autoincrement())
-  desc      String  @db.Text
+  desc      String   @db.Text
   createdAt DateTime @default(now())
-  user      Users     @relation(fields: [usersid], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  post      Posts     @relation(fields: [postid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  user      Users    @relation(fields: [usersid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  post      Posts    @relation(fields: [postid], references: [id],onDelete: Cascade, onUpdate: Cascade)
   usersid   Int
   postid    Int
 }
 
 model Likes {
   id        Int      @id @default(autoincrement())
-  user      Users     @relation(fields: [userid], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  post      Posts     @relation(fields: [postid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  user      Users    @relation(fields: [userid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  post      Posts    @relation(fields: [postid], references: [id],onDelete: Cascade, onUpdate: Cascade)
   userid    Int
   postid    Int
 }
@@ -31,43 +28,55 @@ model Likes {
 model Posts {
   id        Int       @id @default(autoincrement())
   desc      String?   @db.Text
-  img       String?   @db.VarChar(200)
+  img       String?   @db.VarChar(100)
   user      Users     @relation(fields: [usersid], references: [id],onDelete: Cascade, onUpdate: Cascade)
   createdAt DateTime  @default(now())
   comments  Comments[]
   likes     Likes[]
+  shares    Shares[]
   usersid   Int
 }
 
 model Relationships {
   id              Int   @id @default(autoincrement())
-  follower        Users  @relation("Follower", fields: [followerUserid], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  followed        Users  @relation("Followed", fields: [followedUserid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  follower        Users @relation("Follower", fields: [followerUserid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  followed        Users @relation("Followed", fields: [followedUserid], references: [id],onDelete: Cascade, onUpdate: Cascade)
   followerUserid  Int
   followedUserid  Int
 }
 
+model Shares {
+  id        Int    @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      Users    @relation(fields: [userid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  post      Posts    @relation(fields: [postid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  userid    Int
+  postid    Int
+}
+
 model Stories {
   id        Int      @id @default(autoincrement())
-  img       String?  @db.VarChar(200)
-  user      Users     @relation(fields: [userid], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  img       String?  @db.VarChar(100)
+  createdAt DateTime @default(now())
+  user      Users    @relation(fields: [userid], references: [id],onDelete: Cascade, onUpdate: Cascade)
   userid    Int
 }
 
 model Users {
   id            Int       @id @default(autoincrement())
-  username      String    @unique @db.VarChar(50)
-  email         String    @unique @db.VarChar(70)
-  password      String  @db.VarChar(70)
-  name          String @db.VarChar(30)
-  coverPic      String? @db.VarChar(200)
-  profilePic    String? @db.VarChar(200)
-  city          String? @db.VarChar(100)
-  website       String? @db.VarChar(200)
+  username      String    @unique @db.VarChar(20)
+  email         String    @unique @db.VarChar(30)
+  password      String    @db.VarChar(100)
+  name          String    @db.VarChar(30)
+  coverPic      String?   @db.VarChar(100)
+  profilePic    String?   @db.VarChar(100)
+  city          String?   @db.VarChar(30)
+  website       String?   @db.VarChar(50)
   posts         Posts[]
   comments      Comments[]
   likes         Likes[]
   relationships Relationships[] @relation("Follower")
   followedBy    Relationships[] @relation("Followed")
   stories       Stories[]
+  shares    Shares[]
 }

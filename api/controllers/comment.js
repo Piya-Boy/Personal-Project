@@ -67,7 +67,6 @@ const addComment = async (req, res, next) => {
 };
 
 const deleteComment = async (req, res, next) => {
-    // console.log(req.params.id);
     try {
         const token = req.cookies.accessToken;
         if (!token) return next(createError(401, "Not authenticated!"));
@@ -75,7 +74,8 @@ const deleteComment = async (req, res, next) => {
         const userInfo = jwt.verify(token, process.env.SECRET_KEY);
         if (!userInfo) return next(createError(403, "Token is not valid!"));
 
-        const commentId = req.params.id || req.query.id;
+        const commentId = req.params.id; // Extract comment ID from request parameters
+        // console.log(commentId);
 
         const deletedComment = await db.comments.delete({
             where: {
@@ -85,7 +85,7 @@ const deleteComment = async (req, res, next) => {
         });
 
         if (deletedComment) {
-            return next(createError(200, "Comment has been deleted!"));
+            return res.status(200).json({ message: "Comment has been deleted!" });
         } else {
             return next(createError(403, "You are not authorized to delete this comment!"));
         }
@@ -94,6 +94,7 @@ const deleteComment = async (req, res, next) => {
         return next(createError(500, "Internal server error"));
     }
 };
+
 
 const updateComment = async (req, res, next) => {
     try {

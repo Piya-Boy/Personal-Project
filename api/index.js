@@ -11,6 +11,7 @@ const commentRoute = require('./routes/comments.js')
 const likeRoute = require('./routes/likes.js')
 const storyRoute = require('./routes/stories.js')
 const ralationshipRoute = require('./routes/relationships.js')
+const shareRoute = require('./routes/shares.js')
 const multer = require('multer');
 const path = require("path");
 const app = express();
@@ -62,6 +63,8 @@ app.use("/api/comments", commentRoute);
 app.use("/api/likes", likeRoute);
 app.use("/api/stories", storyRoute);
 app.use("/api/relationships", ralationshipRoute);
+app.use("/api/shares", shareRoute);
+
 // not found
 app.use(notFound)
 // error

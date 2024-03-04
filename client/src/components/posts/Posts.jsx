@@ -2,8 +2,6 @@ import "./posts.scss";
 import Post from "../post/Post";
 import { useQuery } from "react-query";
 import axios from "../../config/axios";
-// import { useContext } from "react";
-// import { AuthContext } from "../../context/authContext";
 import PostSkeleton from "../Skeleton/PostSkeleton";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 export default function Posts({ userId }) {

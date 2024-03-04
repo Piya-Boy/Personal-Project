@@ -7,12 +7,14 @@ import { AuthContext } from "../../context/authContext";
 import Avatar from "@mui/material/Avatar";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import { useMutation, useQueryClient } from "react-query";
+import { useAlert } from "react-alert";
 import axios from "../../config/axios";
 
  
 export default function Share() {
   const [inputs, setInputs] = useState({ desc: "" }); // Assuming you have a "desc" field
   const [file, setFile] = useState(null);
+  const alert = useAlert();
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -53,6 +55,7 @@ export default function Share() {
     },
     {
       onSuccess: () => {
+        alert.success("Post is successfully");
         queryClient.invalidateQueries("posts");
       },
     }

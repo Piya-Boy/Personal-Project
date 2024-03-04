@@ -8,12 +8,12 @@ import UploadStories from "./UploadStories";
 export default function Stories() {
   const { currentUser } = useContext(AuthContext);
  const [openUpload, setOpenUpload] = useState(false);
-  const { isLoading, error, data } = useQuery(["stories"], async () =>{
+
+  // Query to fetch stories
+  const { isLoading, error, data } = useQuery(["stories"], async () => {
     const res = await axios.get("/stories");
     return res.data;
   });
-
-  // console.log(data);
 
   return (
     <div className="stories">

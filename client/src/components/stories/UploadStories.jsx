@@ -4,13 +4,14 @@ import BrokenImageOutlinedIcon from "@mui/icons-material/BrokenImageOutlined";
 import { useState } from "react";
 import { useQueryClient, useMutation } from "react-query";
 import axios from "../../config/axios";
+import { useAlert } from "react-alert";
 
 export default function UploadStories({ setOpenUpload }) {
   const [file, setFile] = useState(null);
   const isFileSelected = file == null;
 
   const queryClient = useQueryClient();
-
+  const alert = useAlert();
   
   const mutation = useMutation(
     async (newStory) => {
@@ -23,6 +24,7 @@ export default function UploadStories({ setOpenUpload }) {
     },
     {
       onSuccess: () => {
+        alert.success("Story uploaded successfully");
         queryClient.invalidateQueries("stories");
       },
     }

@@ -18,6 +18,7 @@ import Avatar from "@mui/material/Avatar";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import CommentsEdit from './CommentsEdit';
+import { useAlert } from "react-alert";
 
 
 export default function Comments({ postId }) {
@@ -27,12 +28,21 @@ export default function Comments({ postId }) {
   const [editCommentId, setEditCommentId] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
+  const alert = useAlert();
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const isInputEmpty = Object.values(inputs).every((value) => value === "");
+
+   const { isLoading, error, data } = useQuery(
+     ["comments", postId],
+     async () => {
+       const res = await axios.get(`/comments?postId=${postId}`);
+       return res.data;
+     }
+   );
 
   const mutation = useMutation(
     async (newComment) => {
@@ -57,9 +67,11 @@ export default function Comments({ postId }) {
     },
     {
       onSuccess: () => {
+        alert.success("Comment deleted successfully");
         queryClient.invalidateQueries(["comments", postId]);
       },
       onError: (error) => {
+        alert.error("Failed to delete comment");
         console.error("Error deleting comment:", error);
         // Handle error feedback to the user
       },
@@ -102,10 +114,12 @@ export default function Comments({ postId }) {
     },
     {
       onSuccess: () => {
+        alert.success("Comment edited successfully");
         queryClient.invalidateQueries(["comments", postId]);
         handleEditDialogClose();
       },
       onError: (error) => {
+        alert.error("Failed to edit comment");
         console.error("Error editing comment:", error);
         // Handle error feedback to the user
       },
@@ -123,13 +137,7 @@ export default function Comments({ postId }) {
     mutation.mutate({ desc: inputs.desc, postId });
   };
 
-  const { isLoading, error, data } = useQuery(
-    ["comments", postId],
-    async () => {
-      const res = await axios.get(`/comments?postId=${postId}`);
-      return res.data;
-    }
-  );
+ 
 
   return (
     <div className="comments">
@@ -218,10 +226,16 @@ function LongMenu({ handleDelete, handleEdit }) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleEdit}>
+          <MenuItem onClick={() => {
+            handleEdit();
+            handleClose();
+          }} >
             <EditIcon /> Edit
           </MenuItem>
-          <MenuItem onClick={handleDelete}>
+          <MenuItem onClick={() => {
+            handleDelete();
+            handleClose();
+          }}>
             <DeleteIcon /> Delete
           </MenuItem>
         </Menu>

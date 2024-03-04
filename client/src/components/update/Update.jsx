@@ -5,7 +5,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Avatar from "@mui/material/Avatar";
 import axios from "../../config/axios";
 import { useState } from "react";
-
+import { useAlert } from "react-alert";
 export default function Update({ setOpenUpdate, user }) {
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -35,14 +35,15 @@ export default function Update({ setOpenUpdate, user }) {
 
   // console.log(texts.password);
   const queryClient = useQueryClient();
-
+  const alert = useAlert();
+  
   const mutation = useMutation(
     (user) => {
       return axios.put("/users", user);
     },
     {
       onSuccess: () => {
-        // Invalidate and refetch
+        alert.success("Profile updated successfully");
         queryClient.invalidateQueries(["user"]);
       },
     }
