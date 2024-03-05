@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import axios from "../../config/axios";
 import SeachResult from "./SearchResult";
+import GenQRCode from "../genqrcode/GenQRCode";
 
 export default function Navbar() {
   const { toggle, darkMode } = useContext(DarkModeContext);
@@ -30,6 +31,9 @@ export default function Navbar() {
   const [Input, setInput] = useState("");
   const [Result, setResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openGenQRCode, setOpenGenQRCode] = useState(false);
+  const handleOpenGenQRCode = () => setOpenGenQRCode(true);
+  const handleCloseGenQRCode = () => setOpenGenQRCode(false);
 
   const fetchData = async (value) => {
    try {
@@ -107,8 +111,8 @@ export default function Navbar() {
             <DarkModeOutlinedIcon onClick={toggle} />
           )}
         </div>
-
-        <QrCode2OutlinedIcon />
+        {openGenQRCode && <GenQRCode user={currentUser} handleCloseGenQRCode={handleCloseGenQRCode} />}
+        <QrCode2OutlinedIcon onClick={handleOpenGenQRCode} style={{ cursor: "pointer" }} />
         <div className="search">
           <SearchOutlinedIcon />
           <input

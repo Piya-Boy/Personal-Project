@@ -100,6 +100,7 @@ export default function Profile() {
               </div>
               <div className="center">
                 <span>{data.name}</span>
+                <span>{data.username}</span>
                 <div className="info">
                   <div className="item">
                     <PlaceIcon />
@@ -120,7 +121,6 @@ export default function Profile() {
                       ? "Following"
                       : "Follow"}
                   </button>
-                  
                 )}
               </div>
               <div className="right">

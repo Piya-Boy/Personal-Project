@@ -28,7 +28,7 @@ export default function Update({ setOpenUpdate, user }) {
       console.log(err);
     }
   };
-  
+
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -36,7 +36,7 @@ export default function Update({ setOpenUpdate, user }) {
   // console.log(texts.password);
   const queryClient = useQueryClient();
   const alert = useAlert();
-  
+
   const mutation = useMutation(
     (user) => {
       return axios.put("/users", user);
@@ -61,7 +61,6 @@ export default function Update({ setOpenUpdate, user }) {
     setCover(null);
     setProfile(null);
   };
-
 
   return (
     <div className="update">
@@ -157,7 +156,14 @@ export default function Update({ setOpenUpdate, user }) {
           />
           <button onClick={handleClick}>Update</button>
         </form>
-        <CloseIcon className="close" onClick={() => setOpenUpdate(false)} />
+        <CloseIcon
+          className="close"
+          onClick={() => {
+            setOpenUpdate(false);
+            setCover(null);
+            setProfile(null);
+          }}
+        />
       </div>
     </div>
   );
