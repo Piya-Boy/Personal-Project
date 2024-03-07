@@ -28,6 +28,8 @@ export default function Profile() {
     return res.data;
   });
 
+  console.log(data);
+
   // title
   useEffect(() => {
     document.title = data?.name;

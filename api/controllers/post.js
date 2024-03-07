@@ -46,17 +46,50 @@ const getPosts = async (req, res, next) => {
                         profilePic: true,
                     },
                 },
+                shares: {
+                    select: {
+                        id: true,
+                        postid: true,
+                        createdAt: true,
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                profilePic: true
+                            }
+                        },
+                        post: {
+                            select: {
+                                id: true,
+                                desc: true,
+                                img: true,
+                                user: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        profilePic: true,
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    orderBy: { createdAt: 'desc' },
+                },
             },
             where: whereClause,
             orderBy: { createdAt: 'desc' },
         });
 
-        return res.status(200).json(posts);
+
+
+
+        return res.status(200).json(posts); // Corrected from `shares` to `posts`
     } catch (error) {
         console.error(error);
         return next(createError(500, "Internal server error!"));
     }
 };
+
 
 const addPost = async (req, res, next) => {
     const { desc, img } = req.body;

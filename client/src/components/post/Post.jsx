@@ -1,5 +1,3 @@
-// Post.js
-
 import "./post.scss";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
@@ -11,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
+import ConfirmShare from "../confirmshare/ConfirmShare"; 
 import { useState, useContext } from "react";
 import moment from "moment";
 import { useQuery, useQueryClient, useMutation } from "react-query";
@@ -18,10 +17,11 @@ import axios from "../../config/axios";
 import { AuthContext } from "../../context/authContext";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { useAlert } from  "react-alert";
+import { useAlert } from "react-alert";
 
 export default function Post({ post }) {
   const [commentOpen, setCommentOpen] = useState(false);
+  const [showConfirmShare, setShowConfirmShare] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const alert = useAlert();
@@ -63,25 +63,29 @@ export default function Post({ post }) {
     }
   );
 
-   const shareMutation = useMutation(
-     () => axios.post("/shares", { postId: post.id }),
-     {
-       onSuccess: () => {
-         // Optionally, update UI to reflect the post has been shared
-         console.log("Post shared successfully!");
-         alert.success("Post shared successfully!");
-       },
-     }
-   );
+  const shareMutation = useMutation(
+    () => axios.post("/shares", { postId: post.id }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["posts"]);
+        alert.success("Post shared successfully!");
+        // After successful share, close the confirmation dialog
+        setShowConfirmShare(false);
+      },
+    }
+  );
 
   const handleShare = () => {
-    alert.success("Post shared successfully!");
-     shareMutation.mutate();
-   };
+    shareMutation.mutate();
+  };
 
   const handleLike = () => {
     mutation.mutate(likesData.includes(currentUser.id));
   };
+
+  const handleShowConfirmShare = () => {
+    setShowConfirmShare(true);
+  }
 
   const handleDelete = () => {
     confirmAlert({
@@ -147,10 +151,18 @@ export default function Post({ post }) {
             <TextsmsOutlinedIcon />
             {commentData?.length} Comments
           </div>
-          <div className="item" onClick={handleShare} >
+          <div className="item" onClick={handleShowConfirmShare}>
             <ShareOutlinedIcon />
-            Share
+            {post.shares?.length} Share
           </div>
+          {/* Conditionally render ConfirmShare component */}
+          {showConfirmShare && (
+            <ConfirmShare
+              handleShare={handleShare}
+              postId={post.id}
+              handleCloseConfirmShare={() => setShowConfirmShare(false)}
+            />
+          )}
         </div>
         {commentOpen && <Comments postId={post.id} />}
       </div>

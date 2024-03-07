@@ -1,10 +1,10 @@
 const createError = require("../utils/createError");
 const db = require("../config/connect.js");
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); 
 
 const getshare = async (req, res, next) => {
-    const postId = parseInt(req.query.postid); // แปลงเป็นตัวเลข
-
+    const postId = req.body.postId || req.query.postId;
+    
     const token = req.cookies.accessToken;
 
     if (!token) {
@@ -15,11 +15,12 @@ const getshare = async (req, res, next) => {
 
         const post = await db.posts.findFirst({
             where: {
-                id: postId
+                id: parseInt(postId),
             },
             select: {
                 id: true,
                 img: true,
+                desc: true,
                 createdAt: true,
                 user: {
                     select: {
@@ -54,15 +55,16 @@ const addshare = async ( req, res, next) => {
 
     try {
 
-        // const newshare = await db.shares.create({
-        //     data: {
-        //         userid: userInfo.id,
-        //         postid: parseInt(postId)
-        //     }
-        // });
+        const newshare = await db.shares.create({
+            data: {
+                userid: userInfo.id,
+                postid: parseInt(postId),
+                createdAt: new Date()
+         }
+        });
 
 
-        // return res.status(200).json(newshare);
+        return res.status(200).json(newshare);
         
     } catch (error) {
         return next(createError(500, "Internal server error!"));
@@ -70,7 +72,27 @@ const addshare = async ( req, res, next) => {
 };
 
 const deleteshare = async (req, res, next) => {
+    try {
+        
+        const token = req.cookies.accessToken;
+
+        if (!token) {
+            return next(createError(401, "Not logged in!"));
+        }
+
+        const  shareid  = req.params.id;
     
+        const deletedshare = await db.shares.deleteMany({
+            where: {
+                id: parseInt(shareid)
+            }
+        });
+
+        return res.status(200).json(deletedshare);
+
+    } catch (error) {
+        return next(createError(500, "Internal server error!"));
+    }
 };
 
 module.exports = {
