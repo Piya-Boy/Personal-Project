@@ -100,7 +100,7 @@ const deleteStory = async (req, res, next) => {
     try {
         
         const storyId = req.params.id;
-        console.log(storyId);
+        // console.log(storyId);
 
         // ลบไฟล์ที่เกี่ยวข้องในโฟลเดอร์ upload
         const story = await db.stories.findFirst({

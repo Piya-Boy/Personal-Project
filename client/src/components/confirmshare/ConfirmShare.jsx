@@ -17,7 +17,7 @@ export default function ConfirmShare({ postId, handleCloseConfirmShare, handleSh
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="confirm-share">
+    <div className="confirm-share" onClick={handleCloseConfirmShare}>
       <div className="wrapper">
         <div className="container">
           <div className="user">

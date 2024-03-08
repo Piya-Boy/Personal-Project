@@ -73,6 +73,7 @@ export default function SharesPost({ originalPost, sharedata }) {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["posts"]);
+        setShowConfirmShare(false);
         alert.success("Post shared successfully!");
       },
     }

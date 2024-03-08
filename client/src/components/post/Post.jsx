@@ -67,10 +67,9 @@ export default function Post({ post }) {
     () => axios.post("/shares", { postId: post.id }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["posts"]);
         alert.success("Post shared successfully!");
-        // After successful share, close the confirmation dialog
         setShowConfirmShare(false);
+        queryClient.invalidateQueries(["posts"]);
       },
     }
   );

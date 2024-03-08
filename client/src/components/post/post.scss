@@ -39,7 +39,7 @@
       .postMenu {
         background-color: themed("bg");
         color: themed("textColor");
-                
+
         .MoreVert {
           background-color: themed("bg");
           color: themed("textColor");
@@ -51,6 +51,7 @@
 
         p {
           overflow-wrap: break-word;
+          margin-left: 6px;
         }
 
         img {
@@ -78,5 +79,3 @@
     }
   }
 }
-
-
