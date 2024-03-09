@@ -23,6 +23,7 @@ import {
 import axios from "../../config/axios";
 import SeachResult from "./SearchResult";
 import GenQRCode from "../genqrcode/GenQRCode";
+import logo from "../../assets/logo.png";
 
 export default function Navbar() {
   const { toggle, darkMode } = useContext(DarkModeContext);
@@ -96,7 +97,8 @@ export default function Navbar() {
   return (
     <div className="navbar">
       <div className="left">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src={logo} alt="logo" className="icon" />
           <span>{"<DEVBOOK/>"}</span>
         </Link>
 

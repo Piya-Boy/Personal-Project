@@ -6,7 +6,7 @@ import Navbar from "../components/navbar/Navbar";
 import LeftBar from "../components/leftBar/LeftBar";
 import RightBar from "../components/rightBar/RightBar";
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
-import { useContext } from "react";
+import { useContext} from "react";
 import { AuthContext } from "../context/authContext";
 import { DarkModeContext } from "../context/darkModeContext";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -18,6 +18,7 @@ export default function AppRouter() {
     const queryClient = new QueryClient();
 const Layout = () => {
   return (
+
     <QueryClientProvider client={queryClient}>
       <div className={`theme-${darkMode ? "dark" : "light"}`}>
         <Navbar />
@@ -44,14 +45,14 @@ const Layout = () => {
         {
             path: "/",
             element: (
-                <ProtectedRoute>
+              <ProtectedRoute>
                     <Layout />
                 </ProtectedRoute>
             ),
             children: [
                 {
-                    path: "/",
-                    element: <Home />,
+                  path: "/",
+                  element: <Home />,
                 },
                 {
                     path: "/profile/:id",

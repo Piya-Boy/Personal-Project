@@ -53,8 +53,17 @@
         overflow-wrap: break-word;
       }
 
-      
+    img {
+          width: 100%;
+          max-height: auto;
+          object-fit: cover;
+          margin-top: 20px;
+          border-radius: 10px;
 
+          &:hover {
+            transform: scale(1.02);
+          }
+        }
 
       button {
         border: 1px solid themed("border");
@@ -66,9 +75,9 @@
         background-color: none;
 
         &:hover {
-          // border: none;
           background-color: #5271ff;
           color: themed("bg");
+          transform: scale(1.02);
         }
       }
 

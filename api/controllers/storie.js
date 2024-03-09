@@ -129,6 +129,7 @@ const deleteStory = async (req, res, next) => {
             },
         });
 
+
         if (deletedStory) {
             res.status(200).json({ message: "Story has been deleted!" });
         } else {

@@ -1,6 +1,7 @@
 import "./genqrcode.scss";
 import QRCode from "qrcode.react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import logo from "../../assets/logo.png";
 
 export default function GenQRCode({ user, handleCloseGenQRCode }) {
     const url = `${window.location.origin}/${user.id}`;
@@ -11,7 +12,7 @@ export default function GenQRCode({ user, handleCloseGenQRCode }) {
     size: 250,
     includeMargin: true,
     imageSettings: {
-      src: "https://img2.pic.in.th/pic/logodb4f680ff0b155d6.png",
+      src: logo,
       height: 40,
       width: 40,
       excavate: true,
