@@ -1,4 +1,5 @@
 import "./profile.scss";
+import * as React from "react";
 import FacebookTwoToneIcon from "@mui/icons-material/FacebookTwoTone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -9,6 +10,10 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import Posts from "../../components/posts/Posts";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -23,17 +28,17 @@ export default function Profile() {
 
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
-  const { isLoading, data } = useQuery(["user", userId], async () => {
+  const { isLoading, error, data } = useQuery(["user", userId], async () => {
     const res = await axios.get("/users/find/" + userId);
     return res.data;
   });
 
-  console.log(data);
 
   // title
   useEffect(() => {
-    document.title = data?.name;
-  })
+    document.title = data?.name || "...Loading";
+  }, [data?.name]);
+
 
   const { isLoading: rIsLoading, data: relationshipData } = useQuery(
     ["relationship", userId],
@@ -70,7 +75,22 @@ export default function Profile() {
   return (
     <div className="profile">
       {isLoading ? (
-        "loading"
+        <Typography
+          variant="body3"
+          display="flex"
+          justifyContent="center"
+          alignItems={"center"}
+          sx={{ height: "100vh" }}
+        >
+          <Box>
+            <CircularProgress />
+          </Box>
+        </Typography>
+      ) : error ? (
+        <ErrorOutlineOutlinedIcon
+          style={{ display: "block", margin: "auto" }}
+          sx={{ fontSize: 50, height: "100vh" }}
+        />
       ) : (
         <>
           <div className="images">
@@ -114,7 +134,7 @@ export default function Profile() {
                   </div>
                 </div>
                 {rIsLoading ? (
-                  "loading"
+                  <CircularProgress />
                 ) : userId === currentUser.id ? (
                   <button onClick={() => setOpenUpdate(true)}>update</button>
                 ) : (
@@ -130,8 +150,7 @@ export default function Profile() {
                 <MoreVertIcon />
               </div>
             </div>
-            {isLoading ? "Loading..." : userId === currentUser.id && <Share />}
-
+            {isLoading ? <CircularProgress/> : userId === currentUser.id && <Share />}
             <Posts userId={userId} />
           </div>
         </>

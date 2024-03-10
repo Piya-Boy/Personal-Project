@@ -11,7 +11,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Link } from "react-router-dom";
-import { useContext , useState } from "react";
+import { useContext ,useState, useEffect } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import Avatar from "@mui/material/Avatar";
@@ -52,13 +52,18 @@ export default function Navbar() {
      });
 
      setResult(filteredData);
-     setLoading(false);
+     setTimeout(() => {
+       setLoading(false);
+     }, 500);
    } catch (error) {
      console.error("Error fetching data:", error);
-     setLoading(false); 
+     setLoading(false);
    }
  };
 
+  useEffect(() => {
+    fetchData(Input);
+  }, [Input]);
 
   const handleInput = (e) => {
     const value = e.target.value;

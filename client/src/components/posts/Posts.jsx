@@ -17,7 +17,7 @@ export default function Posts({ userId }) {
     <div className="posts">
       {error ? (
         <ErrorOutlineOutlinedIcon
-          style={{ display: "block", margin: "auto" }}
+          style={{ display: "block", margin: "auto" }} sx={{ fontSize: 50 }}
         />
       ) : isLoading ? (
         [...Array(5)].map((_, i) => <PostSkeleton key={i} />)
@@ -26,9 +26,8 @@ export default function Posts({ userId }) {
           <div key={post.id}>
             <Post post={post} />
             {post.shares && post.shares.length > 0 && (
-              // Passing both the original post and shared posts
               <SharesPost originalPost={post} sharedata={post.shares} />
-            )}
+              )}
           </div>
         ))
       )}
