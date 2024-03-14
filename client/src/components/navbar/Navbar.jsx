@@ -102,24 +102,41 @@ export default function Navbar() {
   return (
     <div className="navbar">
       <div className="left">
-        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
           <img src={logo} alt="logo" className="icon" />
           <span>{"<DEVBOOK/>"}</span>
         </Link>
 
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-          <HomeOutlinedIcon  className="icon"/>
+          <HomeOutlinedIcon className="icon pointers" />
         </Link>
 
         <div style={{ cursor: "pointer" }}>
           {darkMode ? (
-            <WbSunnyOutlinedIcon onClick={toggle} />
+            <WbSunnyOutlinedIcon onClick={toggle} className="pointers" />
           ) : (
-            <DarkModeOutlinedIcon onClick={toggle} />
+            <DarkModeOutlinedIcon onClick={toggle} className="pointers" />
           )}
         </div>
-        {openGenQRCode && <GenQRCode user={currentUser} handleCloseGenQRCode={handleCloseGenQRCode} />}
-        <QrCode2OutlinedIcon onClick={handleOpenGenQRCode} style={{ cursor: "pointer" }} />
+        {openGenQRCode && (
+          <GenQRCode
+            user={currentUser}
+            handleCloseGenQRCode={handleCloseGenQRCode}
+          />
+        )}
+        <QrCode2OutlinedIcon
+          onClick={handleOpenGenQRCode}
+          style={{ cursor: "pointer" }}
+          className="pointers"
+        />
         <div className="search">
           <SearchOutlinedIcon />
           <input
@@ -132,6 +149,7 @@ export default function Navbar() {
             <CloseOutlinedIcon
               onClick={handleListItemClick}
               style={{ cursor: "pointer" }}
+              className="pointers"
             />
           )}
         </div>

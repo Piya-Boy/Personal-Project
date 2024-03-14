@@ -86,7 +86,20 @@
           }
         }
 
-       
+        button {
+            border: none;
+            background-color: #5271ff;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:active {
+              transform: scale(1.2);
+            }
+
+          }
         
       }
       .close {

@@ -75,6 +75,13 @@
           cursor: pointer;
           font-size: 14px;
         }
+
+        .like{
+          &:active{
+            transform: scale(1.2);
+          }
+        }
+
       }
     }
   }

@@ -140,9 +140,9 @@ export default function Post({ post }) {
             {likesLoading ? (
               "Loading..."
             ) : likesData.includes(currentUser.id) ? (
-              <ThumbUpRoundedIcon onClick={handleLike} />
+              <ThumbUpRoundedIcon onClick={handleLike} className="like" />
             ) : (
-              <ThumbUpOffAltIcon onClick={handleLike} />
+              <ThumbUpOffAltIcon onClick={handleLike} className="like" />
             )}
             {likesData?.length} Likes
           </div>

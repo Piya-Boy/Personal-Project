@@ -43,7 +43,7 @@ const getshare = async (req, res, next) => {
 const addshare = async ( req, res, next) => {
     const { postId } = req.body;
 
-    console.log(postId);
+    // console.log(postId);
 
     const token = req.cookies.accessToken;
 

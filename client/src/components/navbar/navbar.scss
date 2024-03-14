@@ -19,6 +19,12 @@
       color: themed("textColor");
     }
 
+    .pointers{
+      &:active{
+        transform: scale(1.2);
+      }
+    }
+
     .left {
       display: flex;
       align-items: center;

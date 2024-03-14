@@ -42,25 +42,38 @@ export default function Update({ setOpenUpdate, user }) {
       return axios.put("/users", user);
     },
     {
-      onSuccess: () => {
+      onSuccess: () => { 
+        window.location.reload();
         alert.success("Profile updated successfully");
         queryClient.invalidateQueries(["user"]);
       },
     }
   );
 
-  const handleClick = async (e) => {
-    e.preventDefault();
+ const handleClick = async (e) => {
+   e.preventDefault();
 
-    let coverUrl;
-    let profileUrl;
-    coverUrl = cover ? await upload(cover) : user.coverPic;
-    profileUrl = profile ? await upload(profile) : user.profilePic;
-    mutation.mutate({ ...texts, coverPic: coverUrl, profilePic: profileUrl });
-    setOpenUpdate(false);
-    setCover(null);
-    setProfile(null);
-  };
+   let coverUrl;
+   let profileUrl;
+   coverUrl = cover ? await upload(cover) : user.coverPic;
+   profileUrl = profile ? await upload(profile) : user.profilePic;
+   mutation.mutate({ ...texts, coverPic: coverUrl, profilePic: profileUrl });
+   setOpenUpdate(false);
+   setCover(null);
+   setProfile(null);
+  
+   const updatedUser = {
+     ...user,
+     coverPic: coverUrl,
+     profilePic: profileUrl,
+     username: texts.username,
+     email: texts.email,
+     name: texts.name,
+     city: texts.city,
+     website: texts.website,
+   };
+   localStorage.setItem("user", JSON.stringify(updatedUser));
+ };
 
   return (
     <div className="update">
@@ -69,7 +82,6 @@ export default function Update({ setOpenUpdate, user }) {
         <form>
           <div className="files">
             <label htmlFor="cover">
-              {/* <span>Cover Picture</span> */}
               <div className=" cover">
                 <img
                   src={
@@ -89,7 +101,6 @@ export default function Update({ setOpenUpdate, user }) {
               onChange={(e) => setCover(e.target.files[0])}
             />
             <label htmlFor="profile">
-              {/* <span>Profile Picture</span> */}
               <div className="profilePic">
                 <Avatar
                   alt={texts.name}

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import UploadStories from "./UploadStories";
 export default function Stories() {
   const { currentUser } = useContext(AuthContext);
- const [openUpload, setOpenUpload] = useState(false);
+  const [openUpload, setOpenUpload] = useState(false);
 
   // Query to fetch stories
   const { isLoading, error, data } = useQuery(["stories"], async () => {
@@ -22,7 +22,6 @@ export default function Stories() {
         <span>{currentUser.name}</span>
         <button onClick={() => setOpenUpload(true)}>+</button>
       </div>
-      {/* <UploadStories /> */}
       {openUpload && <UploadStories setOpenUpload={setOpenUpload} />}
       {error
         ? ""
@@ -38,4 +37,4 @@ export default function Stories() {
           ))}
     </div>
   );
-};
+}

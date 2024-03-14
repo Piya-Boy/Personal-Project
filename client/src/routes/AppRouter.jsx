@@ -26,6 +26,7 @@ export default function AppRouter() {
 
     fakeDataFetch();
   }, []);
+
   
 
 
@@ -59,7 +60,6 @@ const Layout = () => {
             path: "/",
             element: (
               <ProtectedRoute>
-                {/* <Layout /> */}
                 {loading ? <Preloader /> : <Layout />}
                 </ProtectedRoute>
             ),
